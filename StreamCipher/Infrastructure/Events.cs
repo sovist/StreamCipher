@@ -1,4 +1,6 @@
-﻿using Microsoft.Practices.Prism.Events;
+﻿using System.Collections.Generic;
+using Microsoft.Practices.Prism.Events;
+using StreamCipher.Controls.Model;
 
 namespace StreamCipher.Infrastructure
 {
@@ -12,5 +14,7 @@ namespace StreamCipher.Infrastructure
 
         public class InitRegisterBytesIsChenged : CompositePresentationEvent<byte[]> { }
         public class InitShiftBytesIsChenged : CompositePresentationEvent<byte[]> { }
+
+        public class SboxesIsChenged : CompositePresentationEvent<List<Sbox>> { }
     }
 }

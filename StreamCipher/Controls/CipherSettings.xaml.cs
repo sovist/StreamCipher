@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using StreamCipher.Controls.Model;
@@ -53,7 +54,18 @@ namespace StreamCipher.Controls
 
         private void generateNewSboxOnClick(object sender, RoutedEventArgs e)
         {
-
+            double sigma, r;
+            try
+            {
+                sigma = double.Parse(SigmaValue.Text.Replace('.', ','));
+                r = double.Parse(RValue.Text.Replace('.', ','));
+            }
+            catch (Exception exception)
+            {
+                MessageBox.Show(exception.Message);
+                return;
+            }
+            Model.GenerateNewSbox(sigma, r);
         }
     }
 }

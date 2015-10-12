@@ -40,7 +40,7 @@ namespace StreamCipher.Controls
         {
             Application.Current.Dispatcher.BeginInvoke(new Action(() =>
             {
-                InputFileEntropy.Text = str;
+                OutputFileEntropy.Text = str;
             }));
         }
         private void setInputFileOnClick(object sender, RoutedEventArgs e)
@@ -56,7 +56,7 @@ namespace StreamCipher.Controls
 
         private void setOutputFileOnClick(object sender, RoutedEventArgs e)
         {
-            var openFileDialog = new OpenFileDialog();
+            var openFileDialog = new SaveFileDialog();
             if (openFileDialog.ShowDialog() != true) 
                 return;
 

@@ -7,9 +7,6 @@ using StreamCipher.Infrastructure;
 
 namespace StreamCipher
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
         public MainWindowViewModel Model { get; private set; }
@@ -17,12 +14,13 @@ namespace StreamCipher
         public MainWindow()
         {
             Model = new MainWindowViewModel();
-            InitializeComponent();
-           
             App.EventAggregator.GetEvent<Events.InputFileIsChenged>().Subscribe(inputFileIsChenged);
             App.EventAggregator.GetEvent<Events.OutputFileIsChenged>().Subscribe(fileName => Model.OutputFileName = fileName);
             App.EventAggregator.GetEvent<Events.InitRegisterBytesIsChenged>().Subscribe(bytes => Model.InitBytesRegister = bytes);
             App.EventAggregator.GetEvent<Events.InitShiftBytesIsChenged>().Subscribe(bytes => Model.InitBytesShift = bytes);
+            App.EventAggregator.GetEvent<Events.SboxesIsChenged>().Subscribe(list => Model.Sboxes = list);
+
+            InitializeComponent();           
         }
 
         private void inputFileIsChenged(string fileName)
@@ -50,12 +48,13 @@ namespace StreamCipher
 
         private void codedOnClick(object sender, RoutedEventArgs e)
         {
-           
+            Model.Coded();
+            calc<Events.OutputFileEntropyIsCalculated>(Model.OutputFileName);
         }
 
         private void deCodedOnClick(object sender, RoutedEventArgs e)
         {
-            
+            Model.Decoded();
         }
     }
 }

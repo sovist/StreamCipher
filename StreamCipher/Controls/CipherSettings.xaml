@@ -31,20 +31,25 @@
                 </StackPanel>
                 <Button Grid.Row="2" Grid.Column="2" Content="Генерировать" HorizontalAlignment="Left" Click="genereteBytesForShiftOnClick"/>
             </Grid>
-            <ListView ItemsSource="{Binding Model.Sboxes}" HorizontalAlignment="Center" HorizontalContentAlignment="Center">
+
+            <ListView ItemsSource="{Binding Model.Sboxes}" HorizontalAlignment="Center" Margin="10">
                 <ListView.View>
                     <GridView>
-                        <GridViewColumn Header="Параметры Sbox" DisplayMemberBinding="{Binding Name}"/>
-                        <GridViewColumn>
-                            <GridViewColumn.CellTemplate>
-                                <DataTemplate>
-                                    <Button Content="Генерировать" Click="generateNewSboxOnClick" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" />
-                                </DataTemplate>
-                            </GridViewColumn.CellTemplate>
-                        </GridViewColumn>
+                        <GridViewColumn Header="Параметры Sbox" DisplayMemberBinding="{Binding}" />
                     </GridView>
                 </ListView.View>
             </ListView>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="r = " HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <ComboBox x:Name="RValue" ItemsSource="{Binding Model.RValues}" SelectedIndex="0" VerticalAlignment="Center"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="10,0,0,0">
+                    <TextBlock Text="σ = " HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <ComboBox x:Name="SigmaValue" ItemsSource="{Binding Model.SigmaValues}" SelectedIndex="0" VerticalAlignment="Center"/>
+                </StackPanel>
+                <Button Margin="10,0,0,0" Content="Генерировать" Click="generateNewSboxOnClick" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" />
+            </StackPanel>
         </StackPanel>
     </GroupBox>
 </UserControl>
