@@ -13,7 +13,7 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <Button Content="Шифровать" HorizontalAlignment="Left" Margin="5" Click="codedOnClick"/>
-                <Button Content="Расшифровать" HorizontalAlignment="Right" Margin="5" Click="deCodedOnClick"/>
+                <Button Content="Расшифровать" HorizontalAlignment="Right" Margin="5" Click="deCodedOnClick" Visibility="Collapsed"/>
             </Grid>
         </StackPanel>
     </Grid>

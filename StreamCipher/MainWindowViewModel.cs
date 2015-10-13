@@ -45,14 +45,10 @@ namespace StreamCipher
                           Sboxes[1].ArrayBytes[index1/* ^ InitBytesRegister[1]*/] ^ 
                           Sboxes[2].ArrayBytes[index2/* ^ InitBytesRegister[2]*/] ^ 
                           Sboxes[3].ArrayBytes[index3/* ^ InitBytesRegister[3]*/] ^
-                          Sboxes[4].ArrayBytes[index0/* ^ InitBytesRegister[0]*/] ^ 
-                          Sboxes[5].ArrayBytes[index1/* ^ InitBytesRegister[1]*/] ^ 
-                          Sboxes[6].ArrayBytes[index2/* ^ InitBytesRegister[2]*/] ^ 
-                          Sboxes[7].ArrayBytes[index3/* ^ InitBytesRegister[3]*/] ^
-                          Sboxes[8].ArrayBytes[index0/* ^ InitBytesRegister[0]*/] ^ 
-                          Sboxes[9].ArrayBytes[index1/* ^ InitBytesRegister[1]*/] ^ 
-                          Sboxes[10].ArrayBytes[index2/* ^ InitBytesRegister[2]*/] ^ 
-                          Sboxes[11].ArrayBytes[index3/* ^ InitBytesRegister[3]*/]);
+                          Sboxes[4].ArrayBytes[index0 ^ index1/* ^ InitBytesRegister[0]*/] ^ 
+                          Sboxes[5].ArrayBytes[index1 ^ index2/* ^ InitBytesRegister[1]*/] ^ 
+                          Sboxes[6].ArrayBytes[index2 ^ index3/* ^ InitBytesRegister[2]*/] ^ 
+                          Sboxes[7].ArrayBytes[index3 ^ index0/* ^ InitBytesRegister[3]*/]);
         }
 
         private unsafe void forwardSub(ref byte[] arr)

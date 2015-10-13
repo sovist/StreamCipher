@@ -24,12 +24,12 @@
                 </StackPanel>
                 <Button Grid.Row="0" Grid.Column="2" Content="Генерировать" HorizontalAlignment="Left" Click="genereteBytesForRegisterOnClick"/>
 
-                <TextBlock Grid.Row="2" Grid.Column="0" Text="Смещение" HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                <StackPanel Grid.Row="2" Grid.Column="1" Margin="5,0,5,0" VerticalAlignment="Center">
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="Смещение" HorizontalAlignment="Right" VerticalAlignment="Center" Visibility="Collapsed"/>
+                <StackPanel Grid.Row="2" Grid.Column="1" Margin="5,0,5,0" VerticalAlignment="Center" Visibility="Collapsed">
                     <TextBox Text="{Binding Model.InitBytesShift, Converter={StaticResource ByteArrayToStringConverter}, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" 
                          TextChanged="shiftOnTextChanged" HorizontalAlignment="Right" MinWidth="80" TextAlignment="Center"/>
                 </StackPanel>
-                <Button Grid.Row="2" Grid.Column="2" Content="Генерировать" HorizontalAlignment="Left" Click="genereteBytesForShiftOnClick"/>
+                <Button Grid.Row="2" Grid.Column="2" Content="Генерировать" HorizontalAlignment="Left" Click="genereteBytesForShiftOnClick" Visibility="Collapsed"/>
             </Grid>
 
             <ListView ItemsSource="{Binding Model.Sboxes}" HorizontalAlignment="Center" Margin="10">
