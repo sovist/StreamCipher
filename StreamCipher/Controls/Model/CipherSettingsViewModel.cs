@@ -66,7 +66,7 @@ namespace StreamCipher.Controls.Model
             RValues = new List<string> {"0.1", "0.01", "0.001", "0.0001", "0.00001", "0.000001"};
             SigmaValues = new List<string> {"6", "5", "4", "3", "0"};
 
-            Sboxes = new ObservableCollection<Sbox>(new Sbox[4]);
+            Sboxes = new ObservableCollection<Sbox>(new Sbox[12]);
             for (int i = 0; i < Sboxes.Count; i++)            
                 GenerateNewSbox(6, 0.1);                          
             
