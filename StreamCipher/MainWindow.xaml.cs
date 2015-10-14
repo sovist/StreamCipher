@@ -46,19 +46,36 @@ namespace StreamCipher
             }
         }
 
+        private bool checkFiles()
+        {
+            if (string.IsNullOrEmpty(Model.InputFileName))
+            {
+                MessageBox.Show("Необходимо указать входной файл.", "", MessageBoxButton.OK, MessageBoxImage.Information);
+                return true;
+            }
+            if (string.IsNullOrEmpty(Model.OutputFileName))
+            {
+                MessageBox.Show("Необходимо указать выходной файл.", "", MessageBoxButton.OK, MessageBoxImage.Information);
+                return true;
+            }
+            return false;
+        }
+
         private void codedOnClick(object sender, RoutedEventArgs e)
         {
+            if(checkFiles())
+                return;
+
             ProgressBar.Value = 0;
-            CodingInfo.Visibility = Visibility.Visible;
             ProgressBar.Visibility = Visibility.Visible;
-            DateTime workTime = DateTime.UtcNow;
+            var workTime = DateTime.UtcNow;
             Task.Factory.StartNew(() =>
-            {
+            {               
                 Model.Coded(progress =>
                     Application.Current.Dispatcher.BeginInvoke(new Action(() =>
                     {
                         ProgressBar.Value = progress;
-                        TextBlockWorkTime.Text = string.Format("Время работы: {0}", (DateTime.UtcNow - workTime));
+                        TextBlockWorkTime.Text = string.Format("Время работы {0}", (DateTime.UtcNow - workTime));
                     })));
             }).ContinueWith(task =>
             {
@@ -68,11 +85,6 @@ namespace StreamCipher
                     calc<Events.OutputFileEntropyIsCalculated>(Model.OutputFileName);
                 }));
             });                  
-        }
-
-        private void deCodedOnClick(object sender, RoutedEventArgs e)
-        {
-            Model.Decoded();
         }
     }
 }

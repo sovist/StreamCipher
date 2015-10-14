@@ -17,7 +17,7 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
-                <TextBlock Grid.Row="0" Grid.Column="0" Text="Нач. установка РСЛОС" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="Нач. установка" HorizontalAlignment="Right" VerticalAlignment="Center"/>
                 <StackPanel Grid.Row="0" Grid.Column="1" Margin="5,0,5,0" VerticalAlignment="Center">
                     <TextBox  Text="{Binding Model.InitBytesRegister, Converter={StaticResource ByteArrayToStringConverter}, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" 
                           TextChanged="registerOnTextChanged" HorizontalAlignment="Right" MinWidth="80" TextAlignment="Center"/>

@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Threading;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using StreamCipher.Controls.Model;
 
 namespace StreamCipher
 {
-    public class MainWindowViewModel
+    public unsafe class MainWindowViewModel
     {
         public string InputFileName { get; set; }
         public string OutputFileName { get; set; }
@@ -14,66 +15,116 @@ namespace StreamCipher
         public byte[] InitBytesRegister { get; set; }
         public List<Sbox> Sboxes { get; set; }
 
-        private uint _externIndexInc;
+        private uint* _externIndexPtr;
+        private byte* _sbox0, _sbox1, _sbox2, _sbox3, _sbox4, _sbox5, _sbox6, _sbox7;
+        byte* _index0, _index1, _index2, _index3;
         public void Coded(Action<int> progress)
         {
             try
             {
-                _externIndexInc = (uint)(InitBytesShift[0] << 24 | InitBytesShift[1] << 16 | InitBytesShift[2] << 8 | InitBytesShift[3]);
-                File.Create(OutputFileName).Close();
-                using (var fileWrite = new BinaryWriter(File.Open(OutputFileName, FileMode.Open, FileAccess.Write)))               
-                    using (var fileRead = new BinaryReader(File.Open(InputFileName, FileMode.Open, FileAccess.Read)))
-                    {
-                        int readBufer = 3200000;
-                        while (fileRead.BaseStream.Position != fileRead.BaseStream.Length)
-                        {
-                            byte[] temp = fileRead.ReadBytes(readBufer);
+                allocMemoryAndInitCoder();
 
-                            //_substitution.ForwardSub(ref temp);
-                            progress((int)(((double)fileRead.BaseStream.Position / fileRead.BaseStream.Length) * 100));
-                            forwardSub(ref temp);
-                            fileWrite.Write(temp);
-                        }
-                    }              
+                File.Create(OutputFileName).Close();
+                using (var fileWrite = new BinaryWriter(File.Open(OutputFileName, FileMode.Open, FileAccess.Write)))
+                using (var fileRead = new BinaryReader(File.Open(InputFileName, FileMode.Open, FileAccess.Read)))
+                {
+                    int readBufer = 3200000;
+                    while (fileRead.BaseStream.Position != fileRead.BaseStream.Length)
+                    {
+                        byte[] temp = fileRead.ReadBytes(readBufer);
+                        progress((int) (((double) fileRead.BaseStream.Position/fileRead.BaseStream.Length)*100));
+
+                        codedBytes(ref temp);
+                        fileWrite.Write(temp);
+                    }
+                }               
             }
-            catch (IOException) { }
+            catch (IOException)
+            {
+            }
+            finally
+            {
+                freeMemory();
+            }
         }
+
+        private void allocMemoryAndInitCoder()
+        {
+            int len = Sboxes[0].ArrayBytes.Length;
+            _sbox0 = (byte*)Marshal.AllocHGlobal(len);
+            _sbox1 = (byte*)Marshal.AllocHGlobal(len);
+            _sbox2 = (byte*)Marshal.AllocHGlobal(len);
+            _sbox3 = (byte*)Marshal.AllocHGlobal(len);
+            _sbox4 = (byte*)Marshal.AllocHGlobal(len);
+            _sbox5 = (byte*)Marshal.AllocHGlobal(len);
+            _sbox6 = (byte*)Marshal.AllocHGlobal(len);
+            _sbox7 = (byte*)Marshal.AllocHGlobal(len);
+
+            Marshal.Copy(Sboxes[0].ArrayBytes, 0, (IntPtr)_sbox0, len);
+            Marshal.Copy(Sboxes[1].ArrayBytes, 0, (IntPtr)_sbox1, len);
+            Marshal.Copy(Sboxes[2].ArrayBytes, 0, (IntPtr)_sbox2, len);
+            Marshal.Copy(Sboxes[3].ArrayBytes, 0, (IntPtr)_sbox3, len);
+            Marshal.Copy(Sboxes[4].ArrayBytes, 0, (IntPtr)_sbox4, len);
+            Marshal.Copy(Sboxes[5].ArrayBytes, 0, (IntPtr)_sbox5, len);
+            Marshal.Copy(Sboxes[6].ArrayBytes, 0, (IntPtr)_sbox6, len);
+            Marshal.Copy(Sboxes[7].ArrayBytes, 0, (IntPtr)_sbox7, len);
+
+            _externIndexPtr = (uint*)Marshal.AllocHGlobal(sizeof(uint));
+            *_externIndexPtr = (uint)(InitBytesRegister[3] << 24 | InitBytesRegister[2] << 16 | InitBytesRegister[1] << 8 | InitBytesRegister[0]);
+            _index0 = (byte*)_externIndexPtr;
+            _index1 = _index0 + 1;
+            _index2 = _index0 + 2;
+            _index3 = _index0 + 3;
+        }
+        private void freeMemory()
+        {
+            Marshal.FreeHGlobal((IntPtr)_sbox0);
+            Marshal.FreeHGlobal((IntPtr)_sbox1);
+            Marshal.FreeHGlobal((IntPtr)_sbox2);
+            Marshal.FreeHGlobal((IntPtr)_sbox3);
+            Marshal.FreeHGlobal((IntPtr)_sbox4);
+            Marshal.FreeHGlobal((IntPtr)_sbox5);
+            Marshal.FreeHGlobal((IntPtr)_sbox6);
+            Marshal.FreeHGlobal((IntPtr)_sbox7);
+            Marshal.FreeHGlobal((IntPtr)_externIndexPtr);
+        }
+
+        private void codedBytes(ref byte[] arr)
+        {
+            fixed (byte* bytes = arr)
+                for (byte* bytePtr = bytes, end = bytes + arr.Length; bytePtr < end; bytePtr++, (*_externIndexPtr)++)
+                {
+                    byte i0 = *_index0, i1 = *_index1, i2 = *_index2, i3 = *_index3;
+                    byte t1 = getIndex(i0, i1, i2, i3);
+                    byte t2 = getIndex(i3, i0, i1, i2);
+                    byte t3 = getIndex(i2, i3, i0, i1);
+                    byte t4 = getIndex(i1, i2, i3, i0);
+
+                    *bytePtr ^= getIndex(t1, t2, t3, t4);
+                }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private byte getIndex(byte index0, byte index1, byte index2, byte index3)
         {
-            return (byte)(Sboxes[0].ArrayBytes[index0/* ^ InitBytesRegister[0]*/] ^ 
-                          Sboxes[1].ArrayBytes[index1/* ^ InitBytesRegister[1]*/] ^ 
-                          Sboxes[2].ArrayBytes[index2/* ^ InitBytesRegister[2]*/] ^ 
-                          Sboxes[3].ArrayBytes[index3/* ^ InitBytesRegister[3]*/] ^
-                          Sboxes[4].ArrayBytes[index0 ^ index1/* ^ InitBytesRegister[0]*/] ^ 
-                          Sboxes[5].ArrayBytes[index1 ^ index2/* ^ InitBytesRegister[1]*/] ^ 
-                          Sboxes[6].ArrayBytes[index2 ^ index3/* ^ InitBytesRegister[2]*/] ^ 
-                          Sboxes[7].ArrayBytes[index3 ^ index0/* ^ InitBytesRegister[3]*/]);
-        }
-
-        private unsafe void forwardSub(ref byte[] arr)
-        {
-            uint indexInc = _externIndexInc;
-            byte* index = (byte*)(&indexInc);
-            byte* index0 = index, index1 = index + 1, index2 = index + 2, index3 = index + 3;
-
-            for (uint i = 0; i < arr.Length; i++, indexInc++)
-            {
-                var t1 = getIndex(*index0, *index1, *index2, *index3);
-                var t2 = getIndex(*index3, *index0, *index1, *index2);
-                var t3 = getIndex(*index2, *index3, *index0, *index1);
-                var t4 = getIndex(*index1, *index2, *index3, *index0);
-                arr[i] ^= (byte)(getIndex(t1, t2, t3, t4) /*^ 
-                                 getIndex(*index3, *index0, *index1, *index2) ^ 
-                                 getIndex(*index2, *index3, *index0, *index1) ^ 
-                                 getIndex(*index1, *index2, *index3, *index0)*/);
-            }
-
-            _externIndexInc = indexInc;
-        }
-
-        public void Decoded()
-        {
-
+            byte rez  = *(_sbox0 + index0);
+                 rez ^= *(_sbox1 + index1);
+                 rez ^= *(_sbox2 + index2);
+                 rez ^= *(_sbox3 + index3);
+                 rez ^= *(_sbox4 + (index0 ^ index1));
+                 rez ^= *(_sbox5 + (index1 ^ index2));
+                 rez ^= *(_sbox6 + (index2 ^ index3));
+                 rez ^= *(_sbox7 + (index3 ^ index0));
+            return rez;
+            /*
+            return (byte)(Sboxes[0].ArrayBytes[index0] ^ 
+                          Sboxes[1].ArrayBytes[index1] ^ 
+                          Sboxes[2].ArrayBytes[index2] ^ 
+                          Sboxes[3].ArrayBytes[index3] ^
+                          Sboxes[4].ArrayBytes[index0 ^ index1] ^ 
+                          Sboxes[5].ArrayBytes[index1 ^ index2] ^ 
+                          Sboxes[6].ArrayBytes[index2 ^ index3] ^ 
+                          Sboxes[7].ArrayBytes[index3 ^ index0]);*/
         }
     }
 }
