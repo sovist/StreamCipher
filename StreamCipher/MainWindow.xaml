@@ -8,6 +8,10 @@
         <StackPanel>
             <controls:Files/>
             <controls:CipherSettings/>
+            <StackPanel Margin="5" Visibility="Collapsed" x:Name="CodingInfo">
+                <TextBlock x:Name="TextBlockWorkTime" HorizontalAlignment="Center" Margin="5"/>
+                <ProgressBar x:Name="ProgressBar" Height="20"/>
+            </StackPanel>            
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>

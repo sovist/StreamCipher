@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using StreamCipher.Controls.Model;
@@ -14,14 +15,14 @@ namespace StreamCipher
         public List<Sbox> Sboxes { get; set; }
 
         private uint _externIndexInc;
-        public void Coded()
+        public void Coded(Action<int> progress)
         {
             try
             {
                 _externIndexInc = (uint)(InitBytesShift[0] << 24 | InitBytesShift[1] << 16 | InitBytesShift[2] << 8 | InitBytesShift[3]);
                 File.Create(OutputFileName).Close();
-                using (BinaryWriter fileWrite = new BinaryWriter(File.Open(OutputFileName, FileMode.Open, FileAccess.Write)))               
-                    using (BinaryReader fileRead = new BinaryReader(File.Open(InputFileName, FileMode.Open, FileAccess.Read)))
+                using (var fileWrite = new BinaryWriter(File.Open(OutputFileName, FileMode.Open, FileAccess.Write)))               
+                    using (var fileRead = new BinaryReader(File.Open(InputFileName, FileMode.Open, FileAccess.Read)))
                     {
                         int readBufer = 3200000;
                         while (fileRead.BaseStream.Position != fileRead.BaseStream.Length)
@@ -29,12 +30,10 @@ namespace StreamCipher
                             byte[] temp = fileRead.ReadBytes(readBufer);
 
                             //_substitution.ForwardSub(ref temp);
-                            //_progress((int)(((double)fileRead.BaseStream.Position / fileRead.BaseStream.Length) * 100));
+                            progress((int)(((double)fileRead.BaseStream.Position / fileRead.BaseStream.Length) * 100));
                             forwardSub(ref temp);
                             fileWrite.Write(temp);
                         }
-                        //_progress(100);//оновити останній раз
-                        Thread.Sleep(300);
                     }              
             }
             catch (IOException) { }

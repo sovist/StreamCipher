@@ -48,8 +48,26 @@ namespace StreamCipher
 
         private void codedOnClick(object sender, RoutedEventArgs e)
         {
-            Model.Coded();
-            calc<Events.OutputFileEntropyIsCalculated>(Model.OutputFileName);
+            ProgressBar.Value = 0;
+            CodingInfo.Visibility = Visibility.Visible;
+            ProgressBar.Visibility = Visibility.Visible;
+            DateTime workTime = DateTime.UtcNow;
+            Task.Factory.StartNew(() =>
+            {
+                Model.Coded(progress =>
+                    Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        ProgressBar.Value = progress;
+                        TextBlockWorkTime.Text = string.Format("Время работы: {0}", (DateTime.UtcNow - workTime));
+                    })));
+            }).ContinueWith(task =>
+            {
+                Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    ProgressBar.Visibility = Visibility.Collapsed;
+                    calc<Events.OutputFileEntropyIsCalculated>(Model.OutputFileName);
+                }));
+            });                  
         }
 
         private void deCodedOnClick(object sender, RoutedEventArgs e)
