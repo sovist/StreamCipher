@@ -94,13 +94,24 @@ namespace StreamCipher
             fixed (byte* bytes = arr)
                 for (byte* bytePtr = bytes, end = bytes + arr.Length; bytePtr < end; bytePtr++, (*_externIndexPtr)++)
                 {
-                    byte i0 = *_index0, i1 = *_index1, i2 = *_index2, i3 = *_index3;
-                    byte t1 = getIndex(i0, i1, i2, i3);
-                    byte t2 = getIndex(i3, i0, i1, i2);
-                    byte t3 = getIndex(i2, i3, i0, i1);
-                    byte t4 = getIndex(i1, i2, i3, i0);
+                    //byte i0 = *_index0, i1 = *_index1, i2 = *_index2, i3 = *_index3;
+                    //byte t1 = getIndex(i0, i1, i2, i3);
+                    //byte t2 = getIndex(i3, i0, i1, i2);
+                    //byte t3 = getIndex(i2, i3, i0, i1);
+                    //byte t4 = getIndex(i1, i2, i3, i0);
+                    //*bytePtr ^= getIndex(b1, b2, b3, b4);
 
-                    *bytePtr ^= getIndex(t1, t2, t3, t4);
+                    int  t0 = *_index0 ^ *_index1, 
+                         t1 = *_index1 ^ *_index2, 
+                         t2 = *_index2 ^ *_index3, 
+                         t3 = *_index3 ^ *_index0;
+
+                    int b0 = *(_sbox0 + *_index0) ^ *(_sbox1 + *_index1) ^ *(_sbox2 + *_index2) ^ *(_sbox3 + *_index3) ^ *(_sbox4 + t0) ^ *(_sbox5 + t1) ^ *(_sbox6 + t2) ^ *(_sbox7 + t3);
+                    int b1 = *(_sbox0 + *_index3) ^ *(_sbox1 + *_index0) ^ *(_sbox2 + *_index1) ^ *(_sbox3 + *_index2) ^ *(_sbox4 + t3) ^ *(_sbox5 + t0) ^ *(_sbox6 + t1) ^ *(_sbox7 + t2);
+                    int b2 = *(_sbox0 + *_index2) ^ *(_sbox1 + *_index3) ^ *(_sbox2 + *_index0) ^ *(_sbox3 + *_index1) ^ *(_sbox4 + t2) ^ *(_sbox5 + t3) ^ *(_sbox6 + t0) ^ *(_sbox7 + t1);
+                    int b3 = *(_sbox0 + *_index1) ^ *(_sbox1 + *_index2) ^ *(_sbox2 + *_index3) ^ *(_sbox3 + *_index0) ^ *(_sbox4 + t1) ^ *(_sbox5 + t2) ^ *(_sbox6 + t3) ^ *(_sbox7 + t0);
+
+                    *bytePtr ^= (byte)(*(_sbox0 + b0) ^ *(_sbox1 + b1) ^ *(_sbox2 + b2) ^ *(_sbox3 + b3) ^ *(_sbox4 + (b0 ^ b1)) ^ *(_sbox5 + (b1 ^ b2)) ^ *(_sbox6 + (b2 ^ b3)) ^ *(_sbox7 + (b3 ^ b0)));
                 }
         }
 
