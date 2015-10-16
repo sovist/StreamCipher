@@ -34,6 +34,7 @@ namespace StreamCipher.Controls.Model
             set
             {
                 _initBytesShift = value;
+                App.EventAggregator.GetEvent<Events.InitShiftBytesIsChenged>().Publish(_initBytesShift);
                 OnPropertyChanged();
             }
         }
@@ -44,6 +45,7 @@ namespace StreamCipher.Controls.Model
             set
             {
                 _initBytesRegister = value;
+                App.EventAggregator.GetEvent<Events.InitRegisterBytesIsChenged>().Publish(_initBytesRegister);
                 OnPropertyChanged();
             }
         }
