@@ -15,7 +15,7 @@ namespace StreamCipher
         public byte[] InitBytesRegister { get; set; }
         public List<Sbox> Sboxes { get; set; }
 
-        private uint* _externIndexPtr;
+        private uint* _currentSatate;
         private byte* _sbox0, _sbox1, _sbox2, _sbox3, _sbox4, _sbox5, _sbox6, _sbox7;
         byte* _index0, _index1, _index2, _index3;
         public void Coded(Action<int> progress)
@@ -69,9 +69,9 @@ namespace StreamCipher
             Marshal.Copy(Sboxes[6].ArrayBytes, 0, (IntPtr)_sbox6, len);
             Marshal.Copy(Sboxes[7].ArrayBytes, 0, (IntPtr)_sbox7, len);
 
-            _externIndexPtr = (uint*)Marshal.AllocHGlobal(sizeof(uint));
-            *_externIndexPtr = (uint)(InitBytesRegister[3] << 24 | InitBytesRegister[2] << 16 | InitBytesRegister[1] << 8 | InitBytesRegister[0]);
-            _index0 = (byte*)_externIndexPtr;
+            _currentSatate = (uint*)Marshal.AllocHGlobal(sizeof(uint));
+            *_currentSatate = (uint)(InitBytesRegister[3] << 24 | InitBytesRegister[2] << 16 | InitBytesRegister[1] << 8 | InitBytesRegister[0]);
+            _index0 = (byte*)_currentSatate;
             _index1 = _index0 + 1;
             _index2 = _index0 + 2;
             _index3 = _index0 + 3;
@@ -86,13 +86,13 @@ namespace StreamCipher
             Marshal.FreeHGlobal((IntPtr)_sbox5);
             Marshal.FreeHGlobal((IntPtr)_sbox6);
             Marshal.FreeHGlobal((IntPtr)_sbox7);
-            Marshal.FreeHGlobal((IntPtr)_externIndexPtr);
+            Marshal.FreeHGlobal((IntPtr)_currentSatate);
         }
 
         private void codedBytes(ref byte[] arr)
         {
             fixed (byte* bytes = arr)
-                for (byte* bytePtr = bytes, end = bytes + arr.Length; bytePtr < end; bytePtr++, (*_externIndexPtr)++)
+                for (byte* bytePtr = bytes, end = bytes + arr.Length; bytePtr < end; bytePtr++, (*_currentSatate)++)
                 {
                     //byte i0 = *_index0, i1 = *_index1, i2 = *_index2, i3 = *_index3;
                     //byte t1 = getIndex(i0, i1, i2, i3);
