@@ -124,15 +124,15 @@ namespace StreamCipher
                     int b3 = *(_sbox0 + t1) ^ *(_sbox1 + t2) ^ *(_sbox2 + t3) ^ *(_sbox3 + t0);*/
 
                     //easyVersion
-                    //*bytePtr ^= (byte)(*(_sbox0 + (*_index0 ^ *_index1)) ^ *(_sbox1 + (*_index1 ^ *_index2)) ^ *(_sbox2 + (*_index2 ^ *_index3)) ^ *(_sbox3 + (*_index3 ^ *_index0)));
+                    *bytePtr ^= (byte)(*(_sbox0 + (*_index0 ^ *_index1)) ^ *(_sbox1 + (*_index1 ^ *_index2)) ^ *(_sbox2 + (*_index2 ^ *_index3)) ^ *(_sbox3 + (*_index3 ^ *_index0)));
 
-
+                    /*
                     int b0 = *(_sbox0 + *_index0) ^ *(_sbox1 + *_index1) ^ *(_sbox2 + *_index2) ^ *(_sbox3 + *_index3);
                     int b1 = *(_sbox0 + *_index3) ^ *(_sbox1 + *_index0) ^ *(_sbox2 + *_index1) ^ *(_sbox3 + *_index2);
                     int b2 = *(_sbox0 + *_index2) ^ *(_sbox1 + *_index3) ^ *(_sbox2 + *_index0) ^ *(_sbox3 + *_index1);
                     int b3 = *(_sbox0 + *_index1) ^ *(_sbox1 + *_index2) ^ *(_sbox2 + *_index3) ^ *(_sbox3 + *_index0);
 
-                    *bytePtr ^= (byte)(*(_sbox0 + b0) ^ *(_sbox1 + b1) ^ *(_sbox2 + b2) ^ *(_sbox3 + b3));
+                    *bytePtr ^= (byte)(*(_sbox0 + b0) ^ *(_sbox1 + b1) ^ *(_sbox2 + b2) ^ *(_sbox3 + b3));*/
                 }
         }
         
