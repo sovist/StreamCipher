@@ -4,7 +4,7 @@ using System.Threading;
 
 namespace StreamCipher.Infrastructure
 {
-    static class Entropy
+    internal static class Entropy
     {
         public static double Value(string file, Action<int> progress)
         {
@@ -12,14 +12,14 @@ namespace StreamCipher.Infrastructure
             return Calculate(file, progress, out arr);
         }
 
-        static public UInt64[] Calculate(string file, Action<int> progress)
+        public static ulong[] Calculate(string file, Action<int> progress)
         {
-            UInt64[] masCountBytes = new UInt64[256];
+            ulong[] masCountBytes = new ulong[256];
             try
             {
-                using (BinaryReader fileRead = new BinaryReader(File.Open(file, FileMode.Open, FileAccess.Read)))
+                using (var fileRead = new BinaryReader(File.Open(file, FileMode.Open, FileAccess.Read)))
                 {
-                    Int64 length = fileRead.BaseStream.Length;
+                    var length = fileRead.BaseStream.Length;
 
                     while (fileRead.BaseStream.Position != length)
                     {
@@ -37,11 +37,11 @@ namespace StreamCipher.Infrastructure
             return masCountBytes;
         }
 
-        static public double Calculate(string file, Action<int> progress, out UInt64[] masBytes)
+        public static double Calculate(string file, Action<int> progress, out ulong[] masBytes)
         {
             masBytes = Calculate(file, progress);
 
-            Int64 length = 1;
+            long length = 1;
             try
             {
                 length = new FileInfo(file).Length;

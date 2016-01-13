@@ -5,7 +5,7 @@ using System.Windows.Data;
 
 namespace StreamCipher.Converters
 {
-    class ByteArrayToStringConverter : IValueConverter
+    internal class ByteArrayToStringConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
@@ -16,7 +16,7 @@ namespace StreamCipher.Converters
             if (bytes.Length == 0)
                 return string.Empty;
 
-            StringBuilder sb = new StringBuilder(2 * bytes.Length); 
+            var sb = new StringBuilder(2 * bytes.Length); 
             sb.AppendFormat("{0:X2}", bytes[0]);
             for (int i = 1; i < bytes.Length; i++)
                 sb.AppendFormat("-{0:X2}", bytes[i]);

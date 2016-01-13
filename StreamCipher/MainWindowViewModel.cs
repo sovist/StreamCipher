@@ -1,42 +1,98 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
+using System.Windows;
+using StreamCipher.Controls;
 using StreamCipher.Controls.Model;
 
 namespace StreamCipher
 {
-    public unsafe class MainWindowViewModel
+    public unsafe class MainWindowViewModel : INotifyPropertyChanged
     {
-        public string InputFileName { get; set; }
-        public string OutputFileName { get; set; }
-        public byte[] InitBytesShift { get; set; }
-        public byte[] InitBytesRegister { get; set; }
-        public List<Sbox> Sboxes { get; set; }
+        private string _workTime;
+        public string WorkTime
+        {
+            get { return _workTime; }
+            set
+            {
+                _workTime = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private int _progress;
+        public int Progress
+        {
+            get { return _progress; }
+            set
+            {
+                _progress = value;
+                WorkTime = (DateTime.UtcNow - _startDateTime).ToString();
+                OnPropertyChanged();
+            }
+        }
+
+        private Visibility _progressVisibility;
+        public Visibility ProgressVisibility
+        {
+            get { return _progressVisibility; }
+            set
+            {
+                _progressVisibility = value;
+                OnPropertyChanged();
+            }
+        }
+
+
+        public CipherSettingsViewModel CipherSettingsViewModel { get; }
+        public FilesViewModel FilesViewModel { get; }
+
+        public MainWindowViewModel()
+        {
+            FilesViewModel = new FilesViewModel();
+            CipherSettingsViewModel = new CipherSettingsViewModel();
+            ProgressVisibility = Visibility.Collapsed;
+        }
+      
+        public void CodedAsync()
+        {
+            Task.Factory.StartNew(Coded);
+        }
 
         private uint* _currentSatate;
         private byte* _sbox0, _sbox1, _sbox2, _sbox3;//, _sbox4, _sbox5, _sbox6, _sbox7;
-        byte* _index0, _index1, _index2, _index3;
-        public void Coded(Action<int> progress)
+        private byte* _index0, _index1, _index2, _index3;
+        private DateTime _startDateTime;
+        public void Coded()
         {
+            if(!FilesViewModel.FilesIsValid())
+                return;
+           
+            _startDateTime = DateTime.UtcNow;
+            Progress = 0;
+            ProgressVisibility = Visibility.Visible;
+
             try
             {
                 allocMemoryAndInitCoder();
 
-                File.Create(OutputFileName).Close();
-                using (var fileWrite = new BinaryWriter(File.Open(OutputFileName, FileMode.Open, FileAccess.Write)))
-                using (var fileRead = new BinaryReader(File.Open(InputFileName, FileMode.Open, FileAccess.Read)))
+                File.Create(FilesViewModel.OutputFileName).Close();
+                using (var fileWrite = new BinaryWriter(File.Open(FilesViewModel.OutputFileName, FileMode.Open, FileAccess.Write)))
+                using (var fileRead = new BinaryReader(File.Open(FilesViewModel.InputFileName, FileMode.Open, FileAccess.Read)))
                 {
-                    int readBufer = 3200000;
+                    const int readBufer = 3200000;
                     while (fileRead.BaseStream.Position != fileRead.BaseStream.Length)
                     {
-                        byte[] temp = fileRead.ReadBytes(readBufer);
-                        progress((int) (((double) fileRead.BaseStream.Position/fileRead.BaseStream.Length)*100));
+                        var temp = fileRead.ReadBytes(readBufer);
+                        Progress = (int) (((double) fileRead.BaseStream.Position/fileRead.BaseStream.Length)*100);
 
                         codedBytes(ref temp);
                         fileWrite.Write(temp);
                     }
-                }               
+                }
             }
             catch (IOException)
             {
@@ -45,11 +101,14 @@ namespace StreamCipher
             {
                 freeMemory();
             }
+
+            ProgressVisibility = Visibility.Collapsed;
+            FilesViewModel.RecalcOutputFileEntropy();
         }
 
         private void allocMemoryAndInitCoder()
         {
-            int len = Sboxes[0].ArrayBytes.Length;
+            var len = CipherSettingsViewModel.Sboxes[0].ArrayBytes.Length;
             _sbox0 = (byte*)Marshal.AllocHGlobal(len);
             _sbox1 = (byte*)Marshal.AllocHGlobal(len);
             _sbox2 = (byte*)Marshal.AllocHGlobal(len);
@@ -59,17 +118,21 @@ namespace StreamCipher
             _sbox6 = (byte*)Marshal.AllocHGlobal(len);
             _sbox7 = (byte*)Marshal.AllocHGlobal(len);*/
 
-            Marshal.Copy(Sboxes[0].ArrayBytes, 0, (IntPtr)_sbox0, len);
-            Marshal.Copy(Sboxes[1].ArrayBytes, 0, (IntPtr)_sbox1, len);
-            Marshal.Copy(Sboxes[2].ArrayBytes, 0, (IntPtr)_sbox2, len);
-            Marshal.Copy(Sboxes[3].ArrayBytes, 0, (IntPtr)_sbox3, len);
+            Marshal.Copy(CipherSettingsViewModel.Sboxes[0].ArrayBytes, 0, (IntPtr)_sbox0, len);
+            Marshal.Copy(CipherSettingsViewModel.Sboxes[1].ArrayBytes, 0, (IntPtr)_sbox1, len);
+            Marshal.Copy(CipherSettingsViewModel.Sboxes[2].ArrayBytes, 0, (IntPtr)_sbox2, len);
+            Marshal.Copy(CipherSettingsViewModel.Sboxes[3].ArrayBytes, 0, (IntPtr)_sbox3, len);
             /*Marshal.Copy(Sboxes[4].ArrayBytes, 0, (IntPtr)_sbox4, len);
             Marshal.Copy(Sboxes[5].ArrayBytes, 0, (IntPtr)_sbox5, len);
             Marshal.Copy(Sboxes[6].ArrayBytes, 0, (IntPtr)_sbox6, len);
             Marshal.Copy(Sboxes[7].ArrayBytes, 0, (IntPtr)_sbox7, len);*/
 
             _currentSatate = (uint*)Marshal.AllocHGlobal(sizeof(uint));
-            *_currentSatate = (uint)(InitBytesRegister[3] << 24 | InitBytesRegister[2] << 16 | InitBytesRegister[1] << 8 | InitBytesRegister[0]);
+            *_currentSatate = (uint)(CipherSettingsViewModel.InitBytesRegister[3] << 24 | 
+                                     CipherSettingsViewModel.InitBytesRegister[2] << 16 | 
+                                     CipherSettingsViewModel.InitBytesRegister[1] << 8 | 
+                                     CipherSettingsViewModel.InitBytesRegister[0]);
+
             _index0 = (byte*)_currentSatate;
             _index1 = _index0 + 1;
             _index2 = _index0 + 2;
@@ -127,27 +190,19 @@ namespace StreamCipher
                     //*bytePtr ^= (byte)(*(_sbox0 + (*_index0 ^ *_index1)) ^ *(_sbox1 + (*_index1 ^ *_index2)) ^ *(_sbox2 + (*_index2 ^ *_index3)) ^ *(_sbox3 + (*_index3 ^ *_index0)));
 
 
-                    int b0 = *(_sbox0 + *_index0) ^ *(_sbox1 + *_index1) ^ *(_sbox2 + *_index2) ^ *(_sbox3 + *_index3);
-                    int b1 = *(_sbox0 + *_index3) ^ *(_sbox1 + *_index0) ^ *(_sbox2 + *_index1) ^ *(_sbox3 + *_index2);
-                    int b2 = *(_sbox0 + *_index2) ^ *(_sbox1 + *_index3) ^ *(_sbox2 + *_index0) ^ *(_sbox3 + *_index1);
-                    int b3 = *(_sbox0 + *_index1) ^ *(_sbox1 + *_index2) ^ *(_sbox2 + *_index3) ^ *(_sbox3 + *_index0);
+                    var b0 = *(_sbox0 + *_index0) ^ *(_sbox1 + *_index1) ^ *(_sbox2 + *_index2) ^ *(_sbox3 + *_index3);
+                    var b1 = *(_sbox0 + *_index3) ^ *(_sbox1 + *_index0) ^ *(_sbox2 + *_index1) ^ *(_sbox3 + *_index2);
+                    var b2 = *(_sbox0 + *_index2) ^ *(_sbox1 + *_index3) ^ *(_sbox2 + *_index0) ^ *(_sbox3 + *_index1);
+                    var b3 = *(_sbox0 + *_index1) ^ *(_sbox1 + *_index2) ^ *(_sbox2 + *_index3) ^ *(_sbox3 + *_index0);
 
                     *bytePtr ^= (byte)(*(_sbox0 + b0) ^ *(_sbox1 + b1) ^ *(_sbox2 + b2) ^ *(_sbox3 + b3));
                 }
         }
-        
-        /*[MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private byte getIndex(byte index0, byte index1, byte index2, byte index3)
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
-            byte rez  = *(_sbox0 + index0);
-                 rez ^= *(_sbox1 + index1);
-                 rez ^= *(_sbox2 + index2);
-                 rez ^= *(_sbox3 + index3);
-                 rez ^= *(_sbox4 + (index0 ^ index1));
-                 rez ^= *(_sbox5 + (index1 ^ index2));
-                 rez ^= *(_sbox6 + (index2 ^ index3));
-                 rez ^= *(_sbox7 + (index3 ^ index0));
-            return rez;
-        }*/
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 }
