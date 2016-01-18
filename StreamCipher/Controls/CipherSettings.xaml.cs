@@ -1,71 +1,40 @@
-﻿using System;
-using System.Globalization;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using StreamCipher.Controls.Model;
-using StreamCipher.Converters;
 
 namespace StreamCipher.Controls
 {
     public partial class CipherSettings
     {
-        public CipherSettingsViewModel Model { get; private set; }
-        public CipherSettings()
+        public static DependencyProperty ViewModelProperty = DependencyProperty.Register("ViewModel", typeof(CipherSettingsViewModel), typeof(CipherSettings));
+        public CipherSettingsViewModel ViewModel
         {
-            Model = new CipherSettingsViewModel();
+            get { return (CipherSettingsViewModel)GetValue(ViewModelProperty); }
+            set { SetValue(ViewModelProperty, value);}
+        }
+
+        public CipherSettings()
+        {            
             InitializeComponent();          
         }
 
         private void genereteBytesForRegisterOnClick(object sender, RoutedEventArgs e)
         {
-            Model.GenereteNewBytesForRegister();
-        }
-        private void genereteBytesForShiftOnClick(object sender, RoutedEventArgs e)
-        {
-            Model.GenereteNewBytesForShift();
+            ViewModel.GenereteNewBytesForRegister();
         }
 
         private void registerOnTextChanged(object sender, TextChangedEventArgs e)
         {
-            var array = getBytes(sender, e);
-            if (array == null || Model.InitBytesRegister.Length != array.Length)
-                return;           
+            var textBox = sender as TextBox;
+            if(textBox == null)
+                return;
 
-            Model.InitBytesRegister = array;
-        }
-
-        private void shiftOnTextChanged(object sender, TextChangedEventArgs e)
-        {
-            var array = getBytes(sender, e);
-            if (array == null || Model.InitBytesShift.Length != array.Length)
-                return;            
-            Model.InitBytesShift = array;
-        }
-
-        private byte[] getBytes(object sender, TextChangedEventArgs e)
-        {
-            var text = sender as TextBox;
-            if (text == null)
-                return null;
-
-            var converter = new ByteArrayToStringConverter();
-            return converter.ConvertBack(text.Text, sender.GetType(), null, CultureInfo.InvariantCulture) as byte[];
+            ViewModel.SetInitBytesRegister(textBox.Text);
         }
 
         private void generateNewSboxOnClick(object sender, RoutedEventArgs e)
         {
-            double sigma, r;
-            try
-            {
-                sigma = double.Parse(SigmaValue.Text.Replace('.', ','));
-                r = double.Parse(RValue.Text.Replace('.', ','));
-            }
-            catch (Exception exception)
-            {
-                MessageBox.Show(exception.Message);
-                return;
-            }
-            Model.GenerateNewSbox(sigma, r);
+            ViewModel.GenerateNewSbox();
         }
     }
 }
