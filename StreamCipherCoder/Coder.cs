@@ -90,12 +90,24 @@ namespace StreamCipherCoder
             fixed (byte* bytes = arr)
                 for (byte* bytePtr = bytes, end = bytes + arr.Length; bytePtr < end; bytePtr++, (*_currentSatate)++)
             {
+                //var b0 = *(_sbox0 + *_index0) ^ *(_sbox1 + *_index1) ^ *(_sbox2 + *_index2) ^ *(_sbox3 + *_index3);
+                //var b1 = *(_sbox0 + *_index3) ^ *(_sbox1 + *_index0) ^ *(_sbox2 + *_index1) ^ *(_sbox3 + *_index2);
+                //var b2 = *(_sbox0 + *_index2) ^ *(_sbox1 + *_index3) ^ *(_sbox2 + *_index0) ^ *(_sbox3 + *_index1);
+                //var b3 = *(_sbox0 + *_index1) ^ *(_sbox1 + *_index2) ^ *(_sbox2 + *_index3) ^ *(_sbox3 + *_index0);
+
+                //*bytePtr ^= (byte)(*(_sbox0 + b0) ^ *(_sbox1 + b1) ^ *(_sbox2 + b2) ^ *(_sbox3 + b3));
+
                 var b0 = *(_sbox0 + *_index0) ^ *(_sbox1 + *_index1) ^ *(_sbox2 + *_index2) ^ *(_sbox3 + *_index3);
                 var b1 = *(_sbox0 + *_index3) ^ *(_sbox1 + *_index0) ^ *(_sbox2 + *_index1) ^ *(_sbox3 + *_index2);
                 var b2 = *(_sbox0 + *_index2) ^ *(_sbox1 + *_index3) ^ *(_sbox2 + *_index0) ^ *(_sbox3 + *_index1);
                 var b3 = *(_sbox0 + *_index1) ^ *(_sbox1 + *_index2) ^ *(_sbox2 + *_index3) ^ *(_sbox3 + *_index0);
 
-                *bytePtr ^= (byte)(*(_sbox0 + b0) ^ *(_sbox1 + b1) ^ *(_sbox2 + b2) ^ *(_sbox3 + b3));
+                var b10 = *(_sbox0 + b0) ^ *(_sbox1 + b1) ^ *(_sbox2 + b2) ^ *(_sbox3 + b3);
+                var b11 = *(_sbox0 + b3) ^ *(_sbox1 + b0) ^ *(_sbox2 + b1) ^ *(_sbox3 + b2);
+                var b12 = *(_sbox0 + b2) ^ *(_sbox1 + b3) ^ *(_sbox2 + b0) ^ *(_sbox3 + b1);
+                var b13 = *(_sbox0 + b1) ^ *(_sbox1 + b2) ^ *(_sbox2 + b3) ^ *(_sbox3 + b0);
+
+                *bytePtr ^= (byte)(*(_sbox0 + b10) ^ *(_sbox1 + b11) ^ *(_sbox2 + b12) ^ *(_sbox3 + b13));
             }
         }
 
