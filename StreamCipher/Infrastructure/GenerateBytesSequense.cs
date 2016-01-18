@@ -6,7 +6,7 @@ namespace StreamCipher.Infrastructure
     {
         public static byte[] Get(int byteCount)
         {
-            byte[] arr = new byte[byteCount];
+            var arr = new byte[byteCount];
             new RNGCryptoServiceProvider().GetNonZeroBytes(arr);
             return arr;
         }

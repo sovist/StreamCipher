@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using StreamCipher.Converters;
 using StreamCipher.Infrastructure;
@@ -28,13 +29,21 @@ namespace StreamCipher.Controls.Model
         public List<double> SigmaValues { get; }
         public ObservableCollection<Sbox> Sboxes { get; }
 
+        public byte[][] SboxesArray
+        {
+            get
+            {
+                return Sboxes.Select(_ => _.ArrayBytes).ToArray();
+            }
+        }
+
         private byte[] _initBytesRegister;
         private int _randBytesIndex;
 
         public byte[] InitBytesRegister
         {
             get { return _initBytesRegister; }
-            private set
+            set
             {
                 _initBytesRegister = value;
                 OnPropertyChanged();
