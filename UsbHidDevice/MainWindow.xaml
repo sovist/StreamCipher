@@ -3,48 +3,85 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:UsbHidDevice"
+        xmlns:controls="clr-namespace:UsbHidDevice.Controls"
+        xmlns:usbHidDevice="clr-namespace:UsbHidDevice"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
-    <Grid>
+        Title="MainWindow" SizeToContent="WidthAndHeight" 
+        DataContext="{Binding RelativeSource={RelativeSource Self}}">
+
+    <Window.Resources>
+        <Style TargetType="TextBlock" x:Key="DeviceStatusStyle">
+            <Setter Property="Foreground" Value="Green"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Model.Device.Status}" Value="{x:Static usbHidDevice:DeviceStatus.Offline}">
+                    <Setter Property="Foreground" Value="Red"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+    
+    <Grid MinHeight="300">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        <GroupBox Header="Device" Grid.Row="0">
+        <GroupBox Header="Device" Grid.Row="0" Margin="5">
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="Vendor ID" VerticalAlignment="Center"/>
-                <TextBox Margin="5,0,0,0" Text="Vendor ID" IsReadOnly="True" VerticalContentAlignment="Center"/>
+                <TextBox Margin="5,0,0,0" Text="{Binding Model.Device.VendorId, Mode=OneTime}" IsReadOnly="True" VerticalContentAlignment="Center"/>
                 <TextBlock Margin="10,0,0,0" Text="Product ID" VerticalAlignment="Center"/>
-                <ComboBox Margin="5,0,0,0" Text="VendorId" IsReadOnly="True" VerticalContentAlignment="Center">
-                    <ComboBox.Items>
-                        
-                    </ComboBox.Items>
-                </ComboBox>
+                <ComboBox Margin="5,0,0,0" ItemsSource="{Binding Model.Device.ProductIds, Mode=OneTime}" SelectedIndex="{Binding Model.Device.SelectedProductId}" IsReadOnly="True" VerticalContentAlignment="Center"/>
+
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Margin="20,0,0,0" Text="Status:" VerticalAlignment="Center" Style="{StaticResource DeviceStatusStyle}"/>
+                    <TextBlock Margin="5,0,0,0" Text="{Binding Model.Device.Status, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Style="{StaticResource DeviceStatusStyle}"/>
+                </StackPanel>
             </StackPanel>
         </GroupBox>
         
-        <Grid Grid.Row="1">
+        <Grid Grid.Row="1" Grid.Column="0">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
+                <ColumnDefinition MinWidth="200" />
+                <ColumnDefinition MinWidth="200"/>
+                <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
-            <StackPanel Grid.Column="0">
-                <ScrollViewer MaxHeight="200">
-                    <TextBox TextWrapping="Wrap"></TextBox>
-                </ScrollViewer>
+            <GroupBox Header="Отправка" Grid.Column="0" Margin="5,0,0,0" VerticalAlignment="Stretch">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
 
-            </StackPanel>
+                    <ScrollViewer Grid.Row="0" Margin="2" MaxWidth="300" MaxHeight="400">
+                        <TextBox TextWrapping="Wrap"/>
+                    </ScrollViewer>
 
-            <StackPanel Grid.Column="1">
+                    <StackPanel Grid.Row="1" Height="22" Orientation="Horizontal" HorizontalAlignment="Center">
+                        <Button Width="80" HorizontalAlignment="Left"  VerticalAlignment="Bottom"  Content="Очистить"/>
+                        <Button Margin="10,0,0,0" Width="80" HorizontalAlignment="Right" VerticalAlignment="Bottom" Content="Отправить"/>
+                    </StackPanel>
+                </Grid>
+            </GroupBox>
 
-            </StackPanel>
+            <GroupBox Header="Прием" Grid.Column="1" Margin="5,0,0,0" VerticalAlignment="Stretch">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
 
-            <StackPanel Grid.Column="2">
+                    <ScrollViewer Grid.Row="0" Margin="2" MaxWidth="300" MaxHeight="400">
+                        <TextBox TextWrapping="Wrap" Text="{Binding Model.ReceiveText, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    </ScrollViewer>
 
-            </StackPanel>
+                    <StackPanel Grid.Row="1" Height="22" Orientation="Horizontal" HorizontalAlignment="Center">
+                        <Button Width="80" HorizontalAlignment="Left"  VerticalAlignment="Bottom"  Content="Очистить"/>
+                    </StackPanel>
+                </Grid>
+            </GroupBox>
+
+            <controls:CipherSettings ViewModel="{Binding Model.CipherSettings, RelativeSource={RelativeSource AncestorType=usbHidDevice:MainWindow}}" Grid.Column="2" Margin="5,0,5,0"/>
         </Grid>
     </Grid>
 

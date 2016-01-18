@@ -1,16 +1,11 @@
-﻿using System;
-using System.IO;
-
-namespace UsbHidDevice
+﻿namespace UsbHidDevice
 {
     public partial class MainWindow
     {
+        public MainWindowViewModel Model { get; }
         public MainWindow()
         {
-            var atUsbHidpath = $"{Environment.CurrentDirectory}\\AtUsbHid.dll";
-            File.WriteAllBytes(atUsbHidpath, Properties.Resources.AtUsbHid);
-            AtUsbHid.LoadUnmanagedDll(atUsbHidpath);
-
+            Model = new MainWindowViewModel();
             InitializeComponent();
         }
     }

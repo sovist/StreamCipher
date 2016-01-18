@@ -1,0 +1,52 @@
+﻿<UserControl x:Class="UsbHidDevice.Controls.CipherSettings"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"               
+             DataContext="{Binding RelativeSource={ RelativeSource Self}}"
+             xmlns:converters="clr-namespace:UsbHidDevice.Converters">
+
+    <UserControl.Resources>
+        <converters:ByteArrayToStringConverter x:Key="ByteArrayToStringConverter" />
+    </UserControl.Resources>
+    <GroupBox Header="Инициализация байтов">
+        <StackPanel>
+            <Grid Margin="5">
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition Height="10"/>
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="Состояние" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                <StackPanel Grid.Row="0" Grid.Column="1" Margin="5,0,5,0" VerticalAlignment="Center">
+                    <TextBox Text="{Binding ViewModel.InitBytesRegister, Converter={StaticResource ByteArrayToStringConverter}, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" 
+                          TextChanged="registerOnTextChanged" HorizontalAlignment="Right" MinWidth="80" TextAlignment="Center"/>
+                </StackPanel>
+                <Button Grid.Row="0" Grid.Column="2" Content="Генерировать" HorizontalAlignment="Left" Click="genereteBytesForRegisterOnClick"/>
+            </Grid>
+
+            <ListView ItemsSource="{Binding ViewModel.Sboxes}" HorizontalAlignment="Center" Margin="10">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="Параметры Sbox" DisplayMemberBinding="{Binding}" />
+                    </GridView>
+                </ListView.View>
+            </ListView>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="r = " HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <ComboBox x:Name="RValue" ItemsSource="{Binding ViewModel.RValues}" SelectedIndex="{Binding ViewModel.SelectedRValueIndex, Mode=TwoWay}" VerticalAlignment="Center"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="10,0,0,0">
+                    <TextBlock Text="σ = " HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <ComboBox x:Name="SigmaValue" ItemsSource="{Binding ViewModel.SigmaValues}" SelectedIndex="{Binding ViewModel.SelectedSigmaValueIndex, Mode=TwoWay}" VerticalAlignment="Center"/>
+                </StackPanel>
+                <Button Margin="10,0,0,0" Content="Генерировать" Click="generateNewSboxOnClick" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" />
+            </StackPanel>
+        </StackPanel>
+    </GroupBox>
+</UserControl>
