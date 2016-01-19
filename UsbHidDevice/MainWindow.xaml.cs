@@ -1,4 +1,6 @@
-﻿namespace UsbHidDevice
+﻿using System.Windows;
+
+namespace UsbHidDevice
 {
     public partial class MainWindow
     {
@@ -7,6 +9,21 @@
         {
             Model = new MainWindowViewModel();
             InitializeComponent();
+        }
+
+        private void clearSendOnClick(object sender, RoutedEventArgs e)
+        {
+            Model?.ClearSend();
+        }
+
+        private void clearRecieveOnClick(object sender, RoutedEventArgs e)
+        {
+            Model?.ClearRecieve();
+        }
+
+        private void sendOnClick(object sender, RoutedEventArgs e)
+        {
+            Model?.Send();
         }
     }
 }

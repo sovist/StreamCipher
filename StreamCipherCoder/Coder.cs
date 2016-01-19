@@ -21,19 +21,15 @@ namespace StreamCipherCoder
             set { allocMemoryForCurrentSatate(value); }
         }
 
+        private byte[][] _sboxes;
         public byte[][] Sboxes
         {
-            get
+            get { return _sboxes; }
+            set
             {
-                return _sbox0 == null ? null : new[]
-                {
-                    new[] {*_sbox0},
-                    new[] {*_sbox1},
-                    new[] {*_index2},
-                    new[] {*_sbox3}
-                };
+                _sboxes = value;
+                allocMemoryForSboxes(_sboxes);
             }
-            set { allocMemoryForSboxes(value); }
         }
 
         private void allocMemoryForCurrentSatate(IReadOnlyList<byte> currentState)
@@ -109,6 +105,11 @@ namespace StreamCipherCoder
 
                 //*bytePtr ^= (byte)(*(_sbox0 + b10) ^ *(_sbox1 + b11) ^ *(_sbox2 + b12) ^ *(_sbox3 + b13));
             }
+        }
+
+        public void Decoded(byte[] arr)
+        {
+            Coded(arr);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

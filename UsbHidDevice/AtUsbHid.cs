@@ -51,6 +51,21 @@ namespace UsbHidDevice
         {
             return readData(buffer);
         }
+        public static byte[] ReadBuffer()
+        {
+            var outputBufferLength = GetOutputReportLength();
+            if (outputBufferLength <= 0)
+                return null;
+
+            var buff = new byte[outputBufferLength];
+            if (!readData(buff))
+                return null;
+
+            //flush
+            //readData(new byte[outputBufferLength]);
+            //readData(new byte[outputBufferLength]);
+            return buff;
+        }
 
         [DllImport("AtUsbHid.dll", EntryPoint = "setFeature")]
         private static extern bool setFeature(byte[] buffer);
