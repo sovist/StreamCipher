@@ -17,9 +17,9 @@ namespace UsbHidDevice
     {
         public event Action<byte[]> ReceiveBytes;
 
-        private int _inputBufferLength;
-        private const int UpdateDeviceStatusPeriod = 400;
-        private const int ReadBufferPeriod = 5;
+        private const int UpdateDeviceStatusInterval = 400;
+        private const int ReadBufferInterval = 5;
+        private const int SendInterval = 5;
 
         private readonly int _vendorId = 0x03EB;
         public string VendorId => _vendorId.ToString("X4");
@@ -42,7 +42,7 @@ namespace UsbHidDevice
             }
         }
 
-        public int SendBlockSize => _inputBufferLength;
+        public int SendBlockSize { get; private set; }
 
         public HidDeviceViewModel()
         {
@@ -54,17 +54,17 @@ namespace UsbHidDevice
         {
             while (true)
             {
+                Thread.Sleep(UpdateDeviceStatusInterval);
+
                 var isOnline = AtUsbHid.FindHidDevice(_vendorId, _productIds[SelectedProductId]);
                 var currentDeviceStatus = isOnline ? DeviceStatus.Online : DeviceStatus.Offline;
-                if (currentDeviceStatus != Status)
-                {
-                    if (currentDeviceStatus == DeviceStatus.Online)                   
-                        _inputBufferLength = AtUsbHid.GetInputReportLength();
-                    
-                    Status = currentDeviceStatus;
-                }
+                if (currentDeviceStatus == Status)
+                    continue;
 
-                Thread.Sleep(UpdateDeviceStatusPeriod);
+                if (currentDeviceStatus == DeviceStatus.Online)                   
+                    SendBlockSize = AtUsbHid.GetInputReportLength();
+                    
+                Status = currentDeviceStatus;
             }
             // ReSharper disable once FunctionNeverReturns
         }
@@ -73,19 +73,21 @@ namespace UsbHidDevice
         {
             while (true)
             {
-                if (Status == DeviceStatus.Online)
-                {
-                    var buff = AtUsbHid.ReadBuffer();
-                    if (buff != null && buff.Length != 0)
-                        Task.Factory.StartNew(() => ReceiveBytes?.Invoke(buff));
-                }
-                Thread.Sleep(ReadBufferPeriod);
+                Thread.Sleep(ReadBufferInterval);
+
+                if (Status != DeviceStatus.Online)
+                    continue;
+
+                var buff = AtUsbHid.ReadBuffer();
+                if (buff != null && buff.Length != 0)
+                    Task.Factory.StartNew(() => ReceiveBytes?.Invoke(buff));
             }
             // ReSharper disable once FunctionNeverReturns
         }
 
         public bool Send(byte[] bytes)
         {
+            Thread.Sleep(SendInterval);
             if (Status == DeviceStatus.Online && bytes?.Length > 0 && bytes.Length == SendBlockSize)
                 return AtUsbHid.WriteData(bytes);
             return false;
@@ -192,13 +194,9 @@ namespace UsbHidDevice
             var sendBytes = StringToByteConverter.GetBytes(text);
             var codedByteBlocks = codedBytes(sendBytes);
 
-            foreach (var bytes in codedByteBlocks)
-                if (_device.Status == DeviceStatus.Online)
-                {
+            foreach (var bytes in codedByteBlocks)              
                     _device.Send(bytes);
-                    Thread.Sleep(10);
-                }
-
+                
             CipherSettings.InitBytesRegister = _coder.CurrentSatate;         
         }
         private IEnumerable<byte[]> codedBytes(byte[] arr)
@@ -217,7 +215,6 @@ namespace UsbHidDevice
             var payloadLen = blockLength - CoderStateLen;
             var payLoad = new byte[payloadLen];
 
-            //add coded block
             payloadLen -= PayLoadLenInBytes;
             var copyLen = arr.Length - offset > payloadLen ? payloadLen : arr.Length - offset;
 
