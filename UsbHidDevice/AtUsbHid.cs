@@ -8,10 +8,10 @@ namespace UsbHidDevice
         private static IntPtr _libIntPtr;
 
         [DllImport("kernel32.dll")]
-        private static extern bool freeLibrary(IntPtr hModule);
+        private static extern bool FreeLibrary(IntPtr hModule);
         public static bool FreeLibrary()
         {
-            return _libIntPtr != IntPtr.Zero && freeLibrary(_libIntPtr);
+            return _libIntPtr != IntPtr.Zero && FreeLibrary(_libIntPtr);
         }
 
         [DllImport("kernel32.dll")]

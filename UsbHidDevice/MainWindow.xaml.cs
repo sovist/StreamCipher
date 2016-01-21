@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 
 namespace UsbHidDevice
 {
@@ -29,6 +30,11 @@ namespace UsbHidDevice
         private void connectOnClick(object sender, RoutedEventArgs e)
         {
             Model?.Connected();
+        }
+
+        private void mainWindowOnClosed(object sender, EventArgs e)
+        {
+            Model?.Dispose();
         }
     }
 }

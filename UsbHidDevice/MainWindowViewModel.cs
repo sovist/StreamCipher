@@ -4,23 +4,26 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Timers;
 using StreamCipherCoder;
 using UsbHidDevice.Controls.Model;
 using UsbHidDevice.Infrastructure;
+using Timer = System.Timers.Timer;
 
 namespace UsbHidDevice
 {
     public enum DeviceStatus { Offline, Online}
 
-    public class HidDeviceViewModel : INotifyPropertyChanged
+    public class HidDeviceViewModel : INotifyPropertyChanged, IDisposable
     {
         public event Action<byte[]> ReceiveBytes;
 
         private const int UpdateDeviceStatusInterval = 500;
         private const int ReadBufferInterval = 1;
-        private const int SendInterval = 5;
+        private const int SendInterval = 4;
 
         private readonly int _vendorId = 0x03EB;
         public string VendorId => _vendorId.ToString("X4");
@@ -57,6 +60,11 @@ namespace UsbHidDevice
 
         public HidDeviceViewModel()
         {
+            var atUsbHidFilepath = $"{Environment.CurrentDirectory}\\AtUsbHid.dll";
+            if (!File.Exists(atUsbHidFilepath))
+                File.WriteAllBytes(atUsbHidFilepath, Properties.Resources.AtUsbHid);
+            AtUsbHid.LoadUnmanagedDll(atUsbHidFilepath);
+
             Task.Factory.StartNew(deviceStatusMonitor);
             Task.Factory.StartNew(recieveDataMonitor);
         }
@@ -125,9 +133,14 @@ namespace UsbHidDevice
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
+        public void Dispose()
+        {
+            AtUsbHid.FreeLibrary();
+        }
     }
 
-    public class DeviceCoderDecorator
+    public class DeviceCoderDecorator : IDisposable
     {
         public Action<string> ReceiveText;
         public CipherSettingsViewModel CipherSettings { get; }
@@ -282,34 +295,78 @@ namespace UsbHidDevice
             return codedBlock;
         }
         #endregion
+
+        public void Dispose()
+        {
+            _coder.Dispose();
+            _decoder.Dispose();
+        }
     }
 
-    public class MainWindowViewModel : INotifyPropertyChanged
+    public class MainWindowViewModel : INotifyPropertyChanged, IDisposable
     {
         public DeviceCoderDecorator DeviceCoderDecorator { get; }
         public CipherSettingsViewModel CipherSettings => DeviceCoderDecorator.CipherSettings;
         public HidDeviceViewModel Device { get; }
-      
-        private string _receiveText;
-        public string ReceiveText
-        {
-            get { return _receiveText; }
-            private set
-            {               
-                _receiveText = value;
-            }
+
+        public MainWindowViewModel()
+        {          
+            ClearSend();
+            ClearRecieve();
+
+            Device = new HidDeviceViewModel();
+            DeviceCoderDecorator = new DeviceCoderDecorator(Device);
+            DeviceCoderDecorator.ReceiveText += receiveText;
+
+            _updateReceiveText = new Timer
+            {
+                AutoReset = true,
+                Interval = UpdateReceiveTextInterval
+            };
+            _updateReceiveText.Elapsed += updateReceiveTextOnElapsed;
         }
+
+        #region Receive
+        private readonly Timer _updateReceiveText;
+        private const int UpdateReceiveTextInterval = 500;
+        private DateTime _lastReceiveTimeUtc = DateTime.UtcNow;
+        private readonly StringBuilder _stringBuilder = new StringBuilder();
+        public string ReceiveText => _stringBuilder.ToString();
         public string ReceiveTextSizeBytes
         {
             get
             {
-                if (string.IsNullOrEmpty(ReceiveText))
+                if (_stringBuilder.Length == 0)
                     return ByteSizeInfo.Get(0);
 
-                return ByteSizeInfo.Get(ReceiveText.Length * sizeof(char));
+                return ByteSizeInfo.Get(_stringBuilder.Length * sizeof(char));
             }
         }
+        private void updateReceiveTextOnElapsed(object sender, ElapsedEventArgs elapsedEventArgs)
+        {
+            OnPropertyChanged(nameof(ReceiveTextSizeBytes));
 
+            if ((DateTime.UtcNow - _lastReceiveTimeUtc).TotalMilliseconds > UpdateReceiveTextInterval)
+            {
+                OnPropertyChanged(nameof(ReceiveText));
+                _updateReceiveText.Enabled = false;
+            }
+        }
+        private void receiveText(string text)
+        {
+            _updateReceiveText.Enabled = true;
+            _lastReceiveTimeUtc = DateTime.UtcNow;
+            _stringBuilder.Append(text);
+        }
+        public void ClearRecieve()
+        {
+            _stringBuilder.Clear();
+            OnPropertyChanged(nameof(ReceiveTextSizeBytes));
+            OnPropertyChanged(nameof(ReceiveText));
+        }
+        #endregion
+
+        #region Send
         private string _sendText;
         public string SendText
         {
@@ -332,46 +389,11 @@ namespace UsbHidDevice
                 return ByteSizeInfo.Get(SendText.Length * sizeof(char));
             }
         }
-
-        public MainWindowViewModel()
-        {          
-            var atUsbHidFilepath = $"{Environment.CurrentDirectory}\\AtUsbHid.dll";
-            if (!File.Exists(atUsbHidFilepath))
-                File.WriteAllBytes(atUsbHidFilepath, Properties.Resources.AtUsbHid);
-            AtUsbHid.LoadUnmanagedDll(atUsbHidFilepath);
-
-            ClearSend();
-            ClearRecieve();
-
-            Device = new HidDeviceViewModel();
-            DeviceCoderDecorator = new DeviceCoderDecorator(Device);
-            DeviceCoderDecorator.ReceiveText += receiveText;
-            Task.Factory.StartNew(updateReceiveText);
-        }
-
-        private void updateReceiveText()
-        {
-            while (true)
-            {
-                Thread.Sleep(500);
-                OnPropertyChanged(nameof(ReceiveText));
-                OnPropertyChanged(nameof(ReceiveTextSizeBytes));
-            }
-        }
-
-        private void receiveText(string text)
-        {
-            ReceiveText += /*Environment.NewLine +*/ text;
-        }
-
         public void ClearSend()
         {
             SendText = string.Empty;
         }
-        public void ClearRecieve()
-        {
-            ReceiveText = string.Empty;
-        }
+
         public void Send()
         {
             if(string.IsNullOrEmpty(SendText))
@@ -386,6 +408,7 @@ namespace UsbHidDevice
 
             DeviceCoderDecorator.Send(str);
         }
+        #endregion
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
@@ -397,31 +420,11 @@ namespace UsbHidDevice
         {
             Device.Connect();
         }
-    }
 
-    public static class StringToByteConverter
-    {
-        public static byte[] GetBytes(string str)
-        {
-            var bytes = new byte[str.Length*sizeof (char)];
-            var strArr = str.ToCharArray();
-            Buffer.BlockCopy(strArr, 0, bytes, 0, bytes.Length);
-            return bytes;
-        }
-
-        public static string GetString(byte[] bytes)
-        {
-            try
-            {
-                var len = (int)Math.Round((double) bytes.Length/sizeof (char));
-                var chars = new char[len];
-                Buffer.BlockCopy(bytes, 0, chars, 0, bytes.Length);
-                return new string(chars);
-            }
-            catch (Exception)
-            {
-                return string.Empty;
-            }
+        public void Dispose()
+        {  
+            Device.Dispose();   
+            DeviceCoderDecorator.Dispose();
         }
     }
 }

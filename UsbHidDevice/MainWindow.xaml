@@ -7,7 +7,8 @@
         xmlns:usbHidDevice="clr-namespace:UsbHidDevice"
         mc:Ignorable="d"
         SizeToContent="WidthAndHeight" 
-        DataContext="{Binding RelativeSource={RelativeSource Self}}">
+        DataContext="{Binding RelativeSource={RelativeSource Self}}"
+        Closed="mainWindowOnClosed" Icon="Resource/supermono.ico">
 
     <Window.Resources>
         <Style TargetType="TextBlock" x:Key="DeviceStatusStyle">
