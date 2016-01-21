@@ -25,5 +25,10 @@ namespace UsbHidDevice
         {
             Model?.Send();
         }
+
+        private void connectOnClick(object sender, RoutedEventArgs e)
+        {
+            Model?.Connected();
+        }
     }
 }

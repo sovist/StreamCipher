@@ -26,7 +26,9 @@
                     <TextBox Text="{Binding ViewModel.InitBytesRegister, Converter={StaticResource ByteArrayToStringConverter}, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" 
                           TextChanged="registerOnTextChanged" HorizontalAlignment="Right" MinWidth="80" TextAlignment="Center"/>
                 </StackPanel>
-                <Button Grid.Row="0" Grid.Column="2" Content="Генерировать" HorizontalAlignment="Left" Click="genereteBytesForRegisterOnClick"/>
+                <Button Grid.Row="0" Grid.Column="2" HorizontalAlignment="Left" Click="genereteBytesForRegisterOnClick">
+                    <Image Source="../Resource/refresh57_16.png" />
+                </Button>
             </Grid>
 
             <ListView ItemsSource="{Binding ViewModel.Sboxes}" HorizontalAlignment="Center" Margin="10">
@@ -45,7 +47,9 @@
                     <TextBlock Text="σ = " HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     <ComboBox x:Name="SigmaValue" ItemsSource="{Binding ViewModel.SigmaValues}" SelectedIndex="{Binding ViewModel.SelectedSigmaValueIndex, Mode=TwoWay}" VerticalAlignment="Center"/>
                 </StackPanel>
-                <Button Margin="10,0,0,0" Content="Генерировать" Click="generateNewSboxOnClick" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" />
+                <Button Margin="10,0,0,0" Click="generateNewSboxOnClick" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" >
+                    <Image Source="../Resource/refresh57_16.png" />
+                </Button>
             </StackPanel>
         </StackPanel>
     </GroupBox>

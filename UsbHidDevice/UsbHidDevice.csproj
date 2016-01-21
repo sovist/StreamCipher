@@ -38,6 +38,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -116,6 +117,11 @@
     <Content Include="AtUsbHid.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Resource Include="Resource\refresh57_16.png" />
+    <Resource Include="Resource\refresh57_24 .png" />
+    <Resource Include="Resource\refresh57 _128.png" />
+    <Resource Include="Resource\refresh57 _32.png" />
+    <Resource Include="Resource\refresh57 _64 .png" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\StreamCipherCoder\StreamCipherCoder.csproj">

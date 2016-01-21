@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using StreamCipherCoder;
 using UsbHidDevice.Controls.Model;
+using UsbHidDevice.Infrastructure;
 
 namespace UsbHidDevice
 {
@@ -17,8 +18,8 @@ namespace UsbHidDevice
     {
         public event Action<byte[]> ReceiveBytes;
 
-        private const int UpdateDeviceStatusInterval = 400;
-        private const int ReadBufferInterval = 5;
+        private const int UpdateDeviceStatusInterval = 500;
+        private const int ReadBufferInterval = 1;
         private const int SendInterval = 5;
 
         private readonly int _vendorId = 0x03EB;
@@ -26,7 +27,17 @@ namespace UsbHidDevice
 
         private readonly int[] _productIds = { 0, 1 };
         public List<string> ProductIds { get { return _productIds.Select(_ => _.ToString("X4")).ToList(); } }
-        public int SelectedProductId { get; set; }
+
+        private int _selectedProductId;
+        public int SelectedProductId
+        {
+            get { return _selectedProductId; }
+            set
+            {
+                _selectedProductId = value;
+                Status = DeviceStatus.Offline;
+            }
+        }
 
         private DeviceStatus _status;
         public DeviceStatus Status
@@ -55,6 +66,9 @@ namespace UsbHidDevice
             while (true)
             {
                 Thread.Sleep(UpdateDeviceStatusInterval);
+
+                if(Status == DeviceStatus.Online)
+                    continue;
 
                 var isOnline = AtUsbHid.FindHidDevice(_vendorId, _productIds[SelectedProductId]);
                 var currentDeviceStatus = isOnline ? DeviceStatus.Online : DeviceStatus.Offline;
@@ -93,6 +107,19 @@ namespace UsbHidDevice
             return false;
         }
 
+        public void Connect()
+        {
+            var isOnline = AtUsbHid.FindHidDevice(_vendorId, _productIds[SelectedProductId]);
+            var currentDeviceStatus = isOnline ? DeviceStatus.Online : DeviceStatus.Offline;
+            if (currentDeviceStatus == Status)
+                return;
+
+            if (currentDeviceStatus == DeviceStatus.Online)
+                SendBlockSize = AtUsbHid.GetInputReportLength();
+
+            Status = currentDeviceStatus;
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
@@ -114,8 +141,20 @@ namespace UsbHidDevice
         private int CodedBlockLen => _device.SendBlockSize;
         private int CoderStateLen => _coder.CurrentSatate.Length;
 
+        /// <summary>
+        /// кодировать отправку
+        /// </summary>
+        public bool CodedSend { get; set; }
+        /// <summary>
+        /// декодировать при приеме
+        /// </summary>
+        public bool DecodedRecieve { get; set; }
+
         public DeviceCoderDecorator(HidDeviceViewModel device)
         {
+            CodedSend = true;
+            DecodedRecieve = true;
+
             CipherSettings = new CipherSettingsViewModel();
             _decoder.Sboxes = CipherSettings.SboxesArray;
             _coder.Sboxes = CipherSettings.SboxesArray;           
@@ -165,8 +204,11 @@ namespace UsbHidDevice
         {
             lock (_deCoderSync)
             {
-                _decoder.CurrentSatate = coderState;
-                _decoder.Decoded(payLoad);
+                if (DecodedRecieve)
+                {
+                    _decoder.CurrentSatate = coderState;
+                    _decoder.Decoded(payLoad);
+                }
                 return payLoad;
             }
         }
@@ -176,7 +218,7 @@ namespace UsbHidDevice
             var realpayLoadLen = payLoad[0];
             var maxPayLoad = CodedBlockLen - CoderStateLen - PayLoadLenInBytes;
             if (realpayLoadLen > maxPayLoad)
-                return " !err! ";
+                realpayLoadLen = (byte) (payLoad.Length - 1);
 
             var realpayLoad = new byte[realpayLoadLen];
 
@@ -194,10 +236,10 @@ namespace UsbHidDevice
             var sendBytes = StringToByteConverter.GetBytes(text);
             var codedByteBlocks = codedBytes(sendBytes);
 
-            foreach (var bytes in codedByteBlocks)              
-                    _device.Send(bytes);
-                
-            CipherSettings.InitBytesRegister = _coder.CurrentSatate;         
+            foreach (var bytes in codedByteBlocks)            
+                _device.Send(bytes);
+                           
+            CipherSettings.InitBytesRegister = _coder.CurrentSatate;
         }
         private IEnumerable<byte[]> codedBytes(byte[] arr)
         {
@@ -205,12 +247,13 @@ namespace UsbHidDevice
             if (arr == null || arr.Length == 0 || CodedBlockLen <= 0)
                 return codedBlocks;
 
-            for (var i = 0; i < arr.Length; i += CodedBlockLen)
-                codedBlocks.Add(codedBlock(arr, i, CodedBlockLen));
+            int codedBytes;
+            for (var i = 0; i < arr.Length; i += codedBytes)
+                codedBlocks.Add(codedBlock(arr, i, CodedBlockLen, out codedBytes));
 
             return codedBlocks;
         }
-        private byte[] codedBlock(byte[] arr, int offset, int blockLength)
+        private byte[] codedBlock(byte[] arr, int offset, int blockLength, out int codedBytes)
         {
             var payloadLen = blockLength - CoderStateLen;
             var payLoad = new byte[payloadLen];
@@ -218,12 +261,15 @@ namespace UsbHidDevice
             payloadLen -= PayLoadLenInBytes;
             var copyLen = arr.Length - offset > payloadLen ? payloadLen : arr.Length - offset;
 
+            copyLen = copyLen - copyLen%2;
+
+            codedBytes = copyLen;
             payLoad[0] = (byte)copyLen; //add real payloadLen
             Array.Copy(arr, offset, payLoad, PayLoadLenInBytes, copyLen);
 
             //coded
             var startCoderStateState = _coder.CurrentSatate;
-            _coder.Coded(payLoad);
+            _coder.Coded(CodedSend ? payLoad : new byte[payLoad.Length]);
 
             //codedBlock format - [coder state(4 bytes), payloadLen(1 bytes), payLoad]
             var codedBlock = new byte[blockLength];
@@ -240,8 +286,8 @@ namespace UsbHidDevice
 
     public class MainWindowViewModel : INotifyPropertyChanged
     {
-        private readonly DeviceCoderDecorator _deviceCoderDecorator;
-        public CipherSettingsViewModel CipherSettings => _deviceCoderDecorator.CipherSettings;
+        public DeviceCoderDecorator DeviceCoderDecorator { get; }
+        public CipherSettingsViewModel CipherSettings => DeviceCoderDecorator.CipherSettings;
         public HidDeviceViewModel Device { get; }
       
         private string _receiveText;
@@ -251,7 +297,16 @@ namespace UsbHidDevice
             private set
             {               
                 _receiveText = value;
-                OnPropertyChanged();
+            }
+        }
+        public string ReceiveTextSizeBytes
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(ReceiveText))
+                    return ByteSizeInfo.Get(0);
+
+                return ByteSizeInfo.Get(ReceiveText.Length * sizeof(char));
             }
         }
 
@@ -263,6 +318,18 @@ namespace UsbHidDevice
             {
                 _sendText = value;
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(SendTextSizeBytes));
+            }
+        }
+
+        public string SendTextSizeBytes
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(SendText))
+                    return ByteSizeInfo.Get(0);
+
+                return ByteSizeInfo.Get(SendText.Length * sizeof(char));
             }
         }
 
@@ -277,13 +344,24 @@ namespace UsbHidDevice
             ClearRecieve();
 
             Device = new HidDeviceViewModel();
-            _deviceCoderDecorator = new DeviceCoderDecorator(Device);
-            _deviceCoderDecorator.ReceiveText += receiveText;
+            DeviceCoderDecorator = new DeviceCoderDecorator(Device);
+            DeviceCoderDecorator.ReceiveText += receiveText;
+            Task.Factory.StartNew(updateReceiveText);
+        }
+
+        private void updateReceiveText()
+        {
+            while (true)
+            {
+                Thread.Sleep(500);
+                OnPropertyChanged(nameof(ReceiveText));
+                OnPropertyChanged(nameof(ReceiveTextSizeBytes));
+            }
         }
 
         private void receiveText(string text)
         {
-            ReceiveText += text;
+            ReceiveText += /*Environment.NewLine +*/ text;
         }
 
         public void ClearSend()
@@ -299,13 +377,25 @@ namespace UsbHidDevice
             if(string.IsNullOrEmpty(SendText))
                 return;
 
-            _deviceCoderDecorator.Send(SendText);
+            DeviceCoderDecorator.Send(SendText);
+        }
+        public void Send(string str)
+        {
+            if (string.IsNullOrEmpty(str))
+                return;
+
+            DeviceCoderDecorator.Send(str);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        public void Connected()
+        {
+            Device.Connect();
         }
     }
 
