@@ -1,8 +1,8 @@
 using System;
 
-namespace UsbHidDevice
+namespace UsbHidDevice.Converters
 {
-    public static class StringToByteConverter
+    public static class BytesConverter
     {
         public static byte[] GetBytes(string str)
         {

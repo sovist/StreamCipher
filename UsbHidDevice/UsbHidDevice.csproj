@@ -60,8 +60,17 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="CommunicationProtocol.cs" />
+    <Compile Include="HidDeviceCommunicationProtocol.cs" />
+    <Compile Include="Hash.cs" />
+    <Compile Include="HidDeviceViewModel.cs" />
+    <Compile Include="ICommunicationProtocol.cs" />
+    <Compile Include="IHash.cs" />
     <Compile Include="Infrastructure\ByteSizeInfo.cs" />
-    <Compile Include="StringToByteConverter.cs" />
+    <Compile Include="Properties\Annotations.cs" />
+    <Compile Include="Converters\BytesConverter.cs" />
+    <Compile Include="ValidationKey.cs" />
+    <Compile Include="ValidationRules\HexValidationRule.cs" />
     <Page Include="Controls\CipherSettings.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

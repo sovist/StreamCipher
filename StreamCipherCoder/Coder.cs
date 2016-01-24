@@ -6,7 +6,19 @@ using System.Runtime.InteropServices;
 
 namespace StreamCipherCoder
 {
-    public unsafe class Coder : IDisposable
+    public interface ICoder : IDisposable
+    {
+        void Coded(byte[] arr);
+        void Decoded(byte[] arr);
+    }
+
+    public interface ICoderWithSettings : ICoder
+    {
+        byte[] CurrentSatate { get; set; }
+        byte[][] Sboxes { get; set; }
+    }
+
+    public unsafe class Coder : ICoderWithSettings
     {
         private uint* _currentSatate;
         private byte* _sbox0, _sbox1, _sbox2, _sbox3;

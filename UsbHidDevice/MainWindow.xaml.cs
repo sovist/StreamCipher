@@ -36,5 +36,10 @@ namespace UsbHidDevice
         {
             Model?.Dispose();
         }
+
+        private void vectorAuthorizationOnClick(object sender, RoutedEventArgs e)
+        {
+            Model?.HidDeviceCommunicationProtocol.CommunicationProtocol.ValidationKey?.Generate();
+        }
     }
 }

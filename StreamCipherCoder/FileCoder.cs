@@ -5,7 +5,7 @@ namespace StreamCipherCoder
 {
     public static class FileCoder
     {
-        public static void Coded(Coder coder, string inputFileName, string outputFileName, Action<int> progress)
+        public static void Coded(ICoder coder, string inputFileName, string outputFileName, Action<int> progress)
         {
             File.Create(outputFileName).Close();
             using (var fileWrite = new BinaryWriter(File.Open(outputFileName, FileMode.Open, FileAccess.Write)))
