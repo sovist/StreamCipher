@@ -1,0 +1,1 @@
+open in IAR Embedded Workbench path ..\StreamCipherDiplomaWork\Device_AT90USB162_firmware\demo\STK526-series2-hidio\iar\STK526-series2-0.eww

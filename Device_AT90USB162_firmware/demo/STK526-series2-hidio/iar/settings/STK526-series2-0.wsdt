@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<Workspace>
+  <ConfigDictionary>
+    
+  <CurrentConfigs><Project>STK526-series2-hidio/Debug</Project></CurrentConfigs></ConfigDictionary>
+  <Desktop>
+    <Static>
+      <Workspace>
+        <ColumnWidths>
+          
+          
+          
+          
+        <Column0>321</Column0><Column1>27</Column1><Column2>27</Column2><Column3>27</Column3></ColumnWidths>
+      </Workspace>
+    <Build><ColumnWidth0>20</ColumnWidth0><ColumnWidth1>1095</ColumnWidth1><ColumnWidth2>292</ColumnWidth2><ColumnWidth3>73</ColumnWidth3></Build><Find-in-Files><ColumnWidth0>536</ColumnWidth0><ColumnWidth1>76</ColumnWidth1><ColumnWidth2>919</ColumnWidth2></Find-in-Files></Static>
+    <Windows>
+      
+    <Wnd0>
+        <Tabs>
+          <Tab>
+            <Identity>TabID-15403-15498</Identity>
+            <TabName>Workspace</TabName>
+            <Factory>Workspace</Factory>
+            <Session>
+              
+            <NodeDict><ExpandedNode>STK526-series2-hidio</ExpandedNode></NodeDict></Session>
+          </Tab>
+        </Tabs>
+        
+      <SelectedTab>0</SelectedTab></Wnd0><Wnd1><Tabs><Tab><Identity>TabID-21969-15580</Identity><TabName>Build</TabName><Factory>Build</Factory><Session/></Tab><Tab><Identity>TabID-1482-10256</Identity><TabName>Find in Files</TabName><Factory>Find-in-Files</Factory><Session/></Tab></Tabs><SelectedTab>0</SelectedTab></Wnd1></Windows>
+    <Editor>
+      
+      
+      
+      
+    <Pane><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\hid_task.c</Filename><XPos>0</XPos><YPos>113</YPos><SelStart>3956</SelStart><SelEnd>3956</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\modules\usb\usb_commun.h</Filename><XPos>0</XPos><YPos>225</YPos><SelStart>693</SelStart><SelEnd>693</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\usb_descriptors.c</Filename><XPos>0</XPos><YPos>127</YPos><SelStart>4942</SelStart><SelEnd>4942</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\usb_descriptors.h</Filename><XPos>0</XPos><YPos>115</YPos><SelStart>4188</SelStart><SelEnd>4188</SelEnd></Tab><ActiveTab>3</ActiveTab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\usb_specific_request.c</Filename><XPos>0</XPos><YPos>243</YPos><SelStart>6108</SelStart><SelEnd>6108</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\nRF240L01\nRF24L01.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>484</SelStart><SelEnd>484</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\nRF240L01\nRF24L01.c</Filename><XPos>0</XPos><YPos>173</YPos><SelStart>4741</SelStart><SelEnd>4741</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\spi_driver\spi_driver.c</Filename><XPos>0</XPos><YPos>51</YPos><SelStart>285</SelStart><SelEnd>285</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\spi_driver\spi_driver.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>450</SelStart><SelEnd>450</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\conf\config.h</Filename><XPos>0</XPos><YPos>49</YPos><SelStart>2887</SelStart><SelEnd>2887</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\lib_mcu\usb\usb_drv.h</Filename><XPos>0</XPos><YPos>107</YPos><SelStart>4392</SelStart><SelEnd>4392</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\lib_mcu\power\power_drv.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\modules\scheduler\scheduler.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd></Tab></Pane><ActivePane>0</ActivePane><Sizes><Pane><X>1000000</X><Y>1000000</Y></Pane></Sizes><SplitMode>1</SplitMode></Editor>
+    <Positions>
+      
+      
+      
+      
+      
+    <Top><Row0><Sizes><Toolbar-029c7138><key>iaridepm.enu1</key></Toolbar-029c7138></Sizes></Row0></Top><Left><Row0><Sizes><Wnd0><Rect><Top>-2</Top><Left>-2</Left><Bottom>710</Bottom><Right>395</Right><x>-2</x><y>-2</y><xscreen>184</xscreen><yscreen>205</yscreen><sizeHorzCX>116974</sizeHorzCX><sizeHorzCY>219957</sizeHorzCY><sizeVertCX>252384</sizeVertCX><sizeVertCY>763948</sizeVertCY></Rect></Wnd0></Sizes></Row0></Left><Right><Row0><Sizes/></Row0></Right><Bottom><Row0><Sizes><Wnd1><Rect><Top>-2</Top><Left>-2</Left><Bottom>177</Bottom><Right>1575</Right><x>-2</x><y>-2</y><xscreen>1577</xscreen><yscreen>179</yscreen><sizeHorzCX>1002543</sizeHorzCX><sizeHorzCY>192060</sizeHorzCY><sizeVertCX>116974</sizeVertCX><sizeVertCY>219957</sizeVertCY></Rect></Wnd1></Sizes></Row0></Bottom><Float><Sizes/></Float></Positions>
+  </Desktop>
+</Workspace>
+
+

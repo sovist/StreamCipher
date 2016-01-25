@@ -1,0 +1,452 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<project>
+  <fileVersion>2</fileVersion>
+  <fileChecksum>834060197</fileChecksum>
+  <configuration>
+    <name>Debug</name>
+    <outputs>
+      <file>$PROJ_DIR$\..\main.c</file>
+      <file>$PROJ_DIR$\..\..\..\modules\scheduler\scheduler.c</file>
+      <file>$PROJ_DIR$\..\spi_driver\spi_driver.c</file>
+      <file>$PROJ_DIR$\..\..\..\lib_mcu\util\start_boot.c</file>
+      <file>$PROJ_DIR$\..\..\..\lib_board\stk_526\stk_526.h</file>
+      <file>$PROJ_DIR$\..\nRF240L01\nRF24L01.c</file>
+      <file>$PROJ_DIR$\..\..\..\lib_mcu\power\power_drv.c</file>
+      <file>$PROJ_DIR$\..\hid_task.c</file>
+      <file>$PROJ_DIR$\Debug\Obj\usb_specific_request.pbi</file>
+      <file>$PROJ_DIR$\..\conf\conf_usb.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\usb_descriptors.pbi</file>
+      <file>$PROJ_DIR$\..\usb_specific_request.c</file>
+      <file>$PROJ_DIR$\..\..\..\lib_mcu\wdt\wdt_drv.c</file>
+      <file>$PROJ_DIR$\Debug\List\STK526-series2-hidio.map</file>
+      <file>$PROJ_DIR$\..\..\..\lib_mcu\usb\usb_drv.c</file>
+      <file>$PROJ_DIR$\..\..\..\modules\usb\usb_task.c</file>
+      <file>$PROJ_DIR$\..\..\..\lib_mcu\wdt\wdt_drv.h</file>
+      <file>$PROJ_DIR$\..\..\..\modules\usb\device_chap9\usb_device_task.c</file>
+      <file>$PROJ_DIR$\..\usb_descriptors.c</file>
+      <file>$PROJ_DIR$\Debug\Exe\STK526-series2-hidio.a90</file>
+      <file>$PROJ_DIR$\Debug\Obj\power_drv.pbi</file>
+      <file>$PROJ_DIR$\..\..\..\modules\usb\device_chap9\usb_standard_request.c</file>
+      <file>$PROJ_DIR$\..\conf\conf_scheduler.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\usb_drv.pbi</file>
+      <file>$PROJ_DIR$\Debug\Exe\STK526-series2-hidio.dbg</file>
+      <file>$PROJ_DIR$\..\usb_descriptors.h</file>
+      <file>$TOOLKIT_DIR$\inc\intrinsics.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\wdt_drv.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\usb_descriptors.r90</file>
+      <file>$PROJ_DIR$\Debug\Obj\spi_driver.pbi</file>
+      <file>$PROJ_DIR$\..\nRF240L01\nRF24L01.inc</file>
+      <file>$PROJ_DIR$\..\..\..\modules\usb\usb_commun_hid.h</file>
+      <file>$PROJ_DIR$\..\..\..\modules\usb\device_chap9\usb_device_task.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\hid_task.r90</file>
+      <file>$PROJ_DIR$\..\..\..\lib_mcu\power\power_drv.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\usb_device_task.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\scheduler.r90</file>
+      <file>$PROJ_DIR$\Debug\Obj\nRF24L01.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\usb_standard_request.r90</file>
+      <file>$TOOLKIT_DIR$\inc\iomacro.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\main.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\scheduler.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\usb_drv.r90</file>
+      <file>$PROJ_DIR$\Debug\Obj\nRF24L01.r90</file>
+      <file>$PROJ_DIR$\..\..\..\modules\usb\usb_commun.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\start_boot.r90</file>
+      <file>$TOOLKIT_DIR$\inc\inavr.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\usb_standard_request.pbi</file>
+      <file>$TOOLKIT_DIR$\config\lnkusb162s.xcl</file>
+      <file>$TOOLKIT_DIR$\inc\bitdefinitions\iousb162.inc</file>
+      <file>$PROJ_DIR$\..\usb_specific_request.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\spi_driver.r90</file>
+      <file>$PROJ_DIR$\..\..\..\lib_mcu\pll\pll_drv.h</file>
+      <file>$PROJ_DIR$\..\hid_task.h</file>
+      <file>$PROJ_DIR$\..\..\..\modules\usb\usb_task.h</file>
+      <file>$TOOLKIT_DIR$\lib\clib\cl3s-ec_nomul-sf.r90</file>
+      <file>$PROJ_DIR$\Debug\Obj\usb_task.r90</file>
+      <file>$PROJ_DIR$\Debug\Obj\STK526-series2-hidio.pbd</file>
+      <file>$PROJ_DIR$\Debug\Obj\hid_task.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\usb_task.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\main.r90</file>
+      <file>$PROJ_DIR$\..\..\..\modules\scheduler\scheduler.h</file>
+      <file>$TOOLKIT_DIR$\inc\iousb162.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\power_drv.r90</file>
+      <file>$PROJ_DIR$\..\..\..\lib_mcu\usb\usb_drv.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\wdt_drv.r90</file>
+      <file>$PROJ_DIR$\..\nRF240L01\nRF24L01.h</file>
+      <file>$PROJ_DIR$\..\..\..\lib_mcu\util\start_boot.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\usb_device_task.r90</file>
+      <file>$PROJ_DIR$\..\..\..\lib_mcu\compiler.h</file>
+      <file>$PROJ_DIR$\..\spi_driver\spi_driver.h</file>
+      <file>$TOOLKIT_DIR$\inc\ioavr.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\start_boot.pbi</file>
+      <file>$PROJ_DIR$\..\conf\config.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\usb_specific_request.r90</file>
+      <file>$PROJ_DIR$\..\..\..\modules\usb\device_chap9\usb_standard_request.h</file>
+    </outputs>
+    <file>
+      <name>[ROOT_NODE]</name>
+      <outputs>
+        <tool>
+          <name>XLINK</name>
+          <file> 24 13 19</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\main.c</name>
+      <outputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 60</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 40</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 73 69 46 26 39 71 62 49 22 4 61 16 34 64 67</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 73 69 46 26 39 71 62 49 22 4 61 16 34 64 67</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\modules\scheduler\scheduler.c</name>
+      <outputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 36</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 41</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 73 69 46 26 39 71 62 49 22 4 61</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 73 69 46 26 39 71 62 49 22 4 61</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\spi_driver\spi_driver.c</name>
+      <outputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 51</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 29</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 70 73 69 46 26 39 71 62 49 22 4 9 44 31 64</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 70 73 69 46 26 39 71 62 49 22 4 9 44 31 64</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\lib_mcu\util\start_boot.c</name>
+      <outputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 45</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 72</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 73 69 46 26 39 71 62 49 22 4 67 16</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 73 69 46 26 39 71 62 49 22 4 67 16</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\nRF240L01\nRF24L01.c</name>
+      <outputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 43</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 37</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 66 73 69 46 26 39 71 62 49 22 4 30 70 9 44 31 64</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 66 73 69 46 26 39 71 62 49 22 4 30 70 9 44 31 64</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\lib_mcu\power\power_drv.c</name>
+      <outputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 63</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 20</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 73 69 46 26 39 71 62 49 22 4 34</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 73 69 46 26 39 71 62 49 22 4 34</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\hid_task.c</name>
+      <outputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 33</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 58</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 73 69 46 26 39 71 62 49 22 4 9 44 31 53 64 25 75 54 50 67 70 66 30</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 73 69 46 26 39 71 62 49 22 4 9 44 31 53 64 25 75 54 50 67 70 66 30</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\usb_specific_request.c</name>
+      <outputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 74</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 8</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 73 69 46 26 39 71 62 49 22 4 9 44 31 64 25 75 54 50</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 73 69 46 26 39 71 62 49 22 4 9 44 31 64 25 75 54 50</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\lib_mcu\wdt\wdt_drv.c</name>
+      <outputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 65</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 27</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 73 69 46 26 39 71 62 49 22 4 16</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 73 69 46 26 39 71 62 49 22 4 16</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\lib_mcu\usb\usb_drv.c</name>
+      <outputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 42</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 23</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 73 69 46 26 39 71 62 49 22 4 9 44 31 64</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 73 69 46 26 39 71 62 49 22 4 9 44 31 64</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\modules\usb\usb_task.c</name>
+      <outputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 56</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 59</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 73 69 46 26 39 71 62 49 22 4 9 44 31 54 64 25 75 34 16 52 32</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 73 69 46 26 39 71 62 49 22 4 9 44 31 54 64 25 75 34 16 52 32</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\modules\usb\device_chap9\usb_device_task.c</name>
+      <outputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 68</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 35</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 73 69 46 26 39 71 62 49 22 4 9 44 31 32 54 64 25 75 52</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 73 69 46 26 39 71 62 49 22 4 9 44 31 32 54 64 25 75 52</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\usb_descriptors.c</name>
+      <outputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 28</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 10</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 73 69 46 26 39 71 62 49 22 4 9 44 31 64 25 75 54 50</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 73 69 46 26 39 71 62 49 22 4 9 44 31 64 25 75 54 50</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\modules\usb\device_chap9\usb_standard_request.c</name>
+      <outputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 38</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 47</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 73 69 46 26 39 71 62 49 22 4 9 44 31 64 52 25 75 54 50</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 73 69 46 26 39 71 62 49 22 4 9 44 31 64 52 25 75 54 50</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\Debug\Exe\STK526-series2-hidio.dbg</name>
+      <outputs>
+        <tool>
+          <name>XLINK</name>
+          <file> 13 19</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>XLINK</name>
+          <file> 48 33 60 43 63 36 51 45 28 68 42 74 38 56 65 55</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\Debug\Obj\STK526-series2-hidio.pbd</name>
+      <inputs>
+        <tool>
+          <name>BILINK</name>
+          <file> 58 40 37 20 41 29 72 10 35 23 8 47 59 27</file>
+        </tool>
+      </inputs>
+    </file>
+  </configuration>
+  <configuration>
+    <name>Release</name>
+    <outputs/>
+    <forcedrebuild>
+      <name>[MULTI_TOOL]</name>
+      <tool>XLINK</tool>
+    </forcedrebuild>
+  </configuration>
+</project>
+
+
