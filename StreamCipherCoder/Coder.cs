@@ -24,6 +24,9 @@ namespace StreamCipherCoder
         private byte* _sbox0, _sbox1, _sbox2, _sbox3;
         private byte* _index0, _index1, _index2, _index3;
 
+        /// <summary>
+        /// текущее состояние шифратора
+        /// </summary>
         public byte[] CurrentSatate
         {
             get
@@ -34,6 +37,9 @@ namespace StreamCipherCoder
         }
 
         private byte[][] _sboxes;
+        /// <summary>
+        /// S-Блоки
+        /// </summary>
         public byte[][] Sboxes
         {
             get { return _sboxes; }
@@ -93,10 +99,14 @@ namespace StreamCipherCoder
                 Marshal.FreeHGlobal((IntPtr)_sbox3);
         }
 
-        public void Coded(byte[] arr)
+        /// <summary>
+        /// шифровать
+        /// </summary>
+        /// <param name="array">шифруемый масив байт</param>
+        public void Coded(byte[] array)
         {
-            fixed (byte* bytes = arr)
-                for (byte* bytePtr = bytes, end = bytes + arr.Length; bytePtr < end; bytePtr++, (*_currentSatate)++)
+            fixed (byte* bytes = array)
+                for (byte* bytePtr = bytes, end = bytes + array.Length; bytePtr < end; bytePtr++, (*_currentSatate)++)
             {
                 var b0 = *(_sbox0 + *_index0) ^ *(_sbox1 + *_index1) ^ *(_sbox2 + *_index2) ^ *(_sbox3 + *_index3);
                 var b1 = *(_sbox0 + *_index3) ^ *(_sbox1 + *_index0) ^ *(_sbox2 + *_index1) ^ *(_sbox3 + *_index2);
@@ -119,9 +129,13 @@ namespace StreamCipherCoder
             }
         }
 
-        public void Decoded(byte[] arr)
+        /// <summary>
+        /// расшифровать
+        /// </summary>
+        /// <param name="array">масив байт который нужно расшифровать</param>
+        public void Decoded(byte[] array)
         {
-            Coded(arr);
+            Coded(array);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

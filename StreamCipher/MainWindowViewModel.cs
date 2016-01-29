@@ -77,7 +77,7 @@ namespace StreamCipher
             using (coder)
             {
                 FileCoder.Coded(coder, FilesViewModel.InputFileName, FilesViewModel.OutputFileName, _ => Progress = _);
-                CipherSettingsViewModel.InitBytesRegister = coder.CurrentSatate;
+                //CipherSettingsViewModel.InitBytesRegister = coder.CurrentSatate;
             }
 
             ProgressVisibility = Visibility.Collapsed;
