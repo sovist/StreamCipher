@@ -3,9 +3,16 @@ using UsbHidDevice.Converters;
 
 namespace UsbHidDevice
 {
+    public enum ReceiveDataAuthenticatedStatus
+    {
+        None = 0,
+        Authenticated,
+        NotAuthenticated,
+    }
+
     public class HidDeviceCommunicationProtocol : IDisposable
     {
-        public Action<string> ReceiveText;
+        public Action<string, ReceiveDataAuthenticatedStatus> ReceiveText;
         private readonly HidDeviceViewModel _device;
         public ICommunicationProtocol CommunicationProtocol { get; }
 
@@ -18,12 +25,14 @@ namespace UsbHidDevice
 
         private void hidDeviceOnReceiveBytes(byte[] bytes)
         {
-            var data = CommunicationProtocol.GetData(bytes);
+            bool isAuthenticated;
+            var data = CommunicationProtocol.GetData(bytes, out isAuthenticated);
             if(data == null)
                 return;
 
             var text = BytesConverter.GetString(data);
-            ReceiveText?.Invoke(text);
+            var status = isAuthenticated ? ReceiveDataAuthenticatedStatus.Authenticated : ReceiveDataAuthenticatedStatus.NotAuthenticated;
+            ReceiveText?.Invoke(text, status);
         }
 
         public void Send(string text)

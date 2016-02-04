@@ -54,7 +54,7 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
-            <GroupBox Header="Отправка" Grid.Column="0" Margin="5,0,0,0" VerticalAlignment="Stretch">
+            <GroupBox Header="Отправка данных" Grid.Column="0" Margin="5,0,0,0" VerticalAlignment="Stretch">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -63,7 +63,7 @@
                     </Grid.RowDefinitions>
 
                     <TextBlock Grid.Row="0" Margin="2" HorizontalAlignment="Right" Text="{Binding Model.SendTextSizeBytes, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" />
-                    <TextBox Grid.Row="1" Margin="2" MaxWidth="300" MaxHeight="400" TextWrapping="Wrap" 
+                    <TextBox Grid.Row="1" Margin="2" TextWrapping="Wrap" 
                              Text="{Binding Model.SendText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                              ScrollViewer.VerticalScrollBarVisibility="Auto"/>
 
@@ -72,27 +72,37 @@
                 </Grid>
             </GroupBox>
 
-            <GroupBox Header="Прием" Grid.Column="1" Margin="5,0,0,0" VerticalAlignment="Stretch">
+            <GroupBox Header="Прием данных" Grid.Column="1" Margin="5,0,0,0" VerticalAlignment="Stretch">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
+                        <RowDefinition/>
                         <RowDefinition/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
                     <TextBlock Grid.Row="0" Margin="2" HorizontalAlignment="Right" Text="{Binding Model.ReceiveTextSizeBytes, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" />
-                    <TextBox Grid.Row="1" Margin="2" MaxWidth="300" MaxHeight="400" IsReadOnly="True" TextWrapping="Wrap" 
-                             Text="{Binding Model.ReceiveText, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" 
-                             ScrollViewer.VerticalScrollBarVisibility="Auto"/>
 
-                    <Button Grid.Row="2" Margin="2" HorizontalAlignment="Left"  VerticalAlignment="Bottom"  Content="Очистить" Click="clearRecieveOnClick"/>
+                    <GroupBox Grid.Row="1" Header="Прошли аутентификацию" VerticalAlignment="Stretch" Foreground="Green">
+                        <TextBox IsReadOnly="True" TextWrapping="Wrap" 
+                             Text="{Binding Model.AuthenticatedReceiveText, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" 
+                             ScrollViewer.VerticalScrollBarVisibility="Auto"/>
+                    </GroupBox>
+
+                    <GroupBox Grid.Row="2" Header="Не прошли аутентификацию" VerticalAlignment="Stretch" Foreground="Red">
+                        <TextBox IsReadOnly="True" TextWrapping="Wrap" 
+                             Text="{Binding Model.NotAuthenticatedReceiveText, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" 
+                             ScrollViewer.VerticalScrollBarVisibility="Auto"/>
+                    </GroupBox>
+                    
+                    <Button Grid.Row="3" Margin="2" HorizontalAlignment="Left"  VerticalAlignment="Bottom"  Content="Очистить" Click="clearRecieveOnClick"/>
                 </Grid>
             </GroupBox>
 
             <controls:CipherSettings Grid.Column="2" ViewModel="{Binding Model.HidDeviceCommunicationProtocol.CommunicationProtocol.CipherSettings, RelativeSource={RelativeSource AncestorType=usbHidDevice:MainWindow}}" Margin="5,0,5,0"/>
         </Grid>
-        
-        <GroupBox Grid.Row="2" Margin="5" Header="Вектор авторизации (ключ свой-чужой)">
+
+        <GroupBox Grid.Row="2" Margin="5" Header="Вектор аутентификации (ключ свой-чужой)">
             <StackPanel Orientation="Horizontal" Margin="0,5,0,0" HorizontalAlignment="Center">
                 <ComboBox ItemsSource="{Binding Model.HidDeviceCommunicationProtocol.CommunicationProtocol.ValidationKey.Lengths, Mode=OneTime}" 
                           SelectedIndex="{Binding Model.HidDeviceCommunicationProtocol.CommunicationProtocol.ValidationKey.SelectedLengthIndex, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>

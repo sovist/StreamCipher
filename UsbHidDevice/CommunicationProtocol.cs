@@ -93,7 +93,7 @@ namespace UsbHidDevice
         }
 
         #region Decoded
-        public byte[] GetData(byte[] recieveBytes)
+        public byte[] GetData(byte[] recieveBytes, out bool isAuthenticated)
         {
             byte[] coderState, codedData;
             splitArrays(recieveBytes, out coderState, CoderStateLen, out codedData);
@@ -103,7 +103,8 @@ namespace UsbHidDevice
             splitArrays(dataWithHash, out hash, HashLenInBytes, out dataWithLen);
             var calcHash = this.calcHash(_decoderHash, dataWithLen, coderState);
 
-            return isArraysEquivalent(hash, calcHash) ? getDataFromDataWithLen(dataWithLen) : null;
+            isAuthenticated = isArraysEquivalent(hash, calcHash);
+            return getDataFromDataWithLen(dataWithLen);
         }
         private static byte[] getDataFromDataWithLen(byte[] dataWithPayLoadLen)
         {

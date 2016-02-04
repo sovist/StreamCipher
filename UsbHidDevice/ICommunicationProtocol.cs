@@ -12,7 +12,7 @@ namespace UsbHidDevice
         /// <summary>
         /// получить данные
         /// </summary>
-        byte[] GetData(byte[] recieveBytes);
+        byte[] GetData(byte[] recieveBytes, out bool isAuthenticated);
 
         /// <summary>
         /// данные для отправки
