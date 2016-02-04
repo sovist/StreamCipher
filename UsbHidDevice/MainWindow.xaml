@@ -63,7 +63,7 @@
                     </Grid.RowDefinitions>
 
                     <TextBlock Grid.Row="0" Margin="2" HorizontalAlignment="Right" Text="{Binding Model.SendTextSizeBytes, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" />
-                    <TextBox Grid.Row="1" Margin="2" TextWrapping="Wrap" 
+                    <TextBox Grid.Row="1" Margin="2" MaxHeight="400" MaxWidth="400" TextWrapping="Wrap" 
                              Text="{Binding Model.SendText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                              ScrollViewer.VerticalScrollBarVisibility="Auto"/>
 
@@ -84,13 +84,13 @@
                     <TextBlock Grid.Row="0" Margin="2" HorizontalAlignment="Right" Text="{Binding Model.ReceiveTextSizeBytes, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" />
 
                     <GroupBox Grid.Row="1" Header="Прошли аутентификацию" VerticalAlignment="Stretch" Foreground="Green">
-                        <TextBox IsReadOnly="True" TextWrapping="Wrap" 
+                        <TextBox MaxHeight="400" MaxWidth="400" IsReadOnly="True" TextWrapping="Wrap" 
                              Text="{Binding Model.AuthenticatedReceiveText, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" 
                              ScrollViewer.VerticalScrollBarVisibility="Auto"/>
                     </GroupBox>
 
                     <GroupBox Grid.Row="2" Header="Не прошли аутентификацию" VerticalAlignment="Stretch" Foreground="Red">
-                        <TextBox IsReadOnly="True" TextWrapping="Wrap" 
+                        <TextBox MaxHeight="400" MaxWidth="400" IsReadOnly="True" TextWrapping="Wrap" 
                              Text="{Binding Model.NotAuthenticatedReceiveText, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" 
                              ScrollViewer.VerticalScrollBarVisibility="Auto"/>
                     </GroupBox>
