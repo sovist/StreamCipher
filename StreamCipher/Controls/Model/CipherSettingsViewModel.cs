@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using StreamCipher.Converters;
 using StreamCipher.Infrastructure;
 
@@ -46,7 +45,7 @@ namespace StreamCipher.Controls.Model
             set
             {
                 _initBytesRegister = value;
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(InitBytesRegister));
             }
         }
 
@@ -95,7 +94,7 @@ namespace StreamCipher.Controls.Model
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        protected virtual void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }

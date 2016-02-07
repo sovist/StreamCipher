@@ -1,7 +1,6 @@
 using System;
 using System.ComponentModel;
 using System.Globalization;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows;
 using StreamCipher.Annotations;
@@ -18,7 +17,7 @@ namespace StreamCipher.Controls.Model
             private set
             {
                 _inputFileEntropy = value;
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(InputFileEntropy));
             }
         }
 
@@ -29,7 +28,7 @@ namespace StreamCipher.Controls.Model
             private set
             {
                 _outputFileEntropy = value;
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(OutputFileEntropy));
             }
         }
 
@@ -40,7 +39,7 @@ namespace StreamCipher.Controls.Model
             private set
             {
                 _inputFileName = value; 
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(InputFileName));
             }
         }
 
@@ -51,7 +50,7 @@ namespace StreamCipher.Controls.Model
             private set
             {
                 _outputFileName = value;
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(OutputFileName));
             }
         }
 
@@ -62,7 +61,7 @@ namespace StreamCipher.Controls.Model
             private set
             {
                 _inputFileSize = value;
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(InputFileSize));
             }
         }
 
@@ -78,28 +77,26 @@ namespace StreamCipher.Controls.Model
             RecalcInputFileEntropy();
         }
 
-        public async void RecalcInputFileEntropy()
+        public void RecalcInputFileEntropy()
         {
-            InputFileEntropy = await calc(InputFileName, progress => InputFileEntropy = progress);
+            Task.Factory.StartNew(() => InputFileEntropy = calc(InputFileName, progress => InputFileEntropy = progress));
         }
-        public async void RecalcOutputFileEntropy()
+        public void RecalcOutputFileEntropy()
         {
-            OutputFileEntropy = await calc(OutputFileName, progress => OutputFileEntropy = progress);
+            Task.Factory.StartNew(() => OutputFileEntropy = calc(OutputFileName, progress => OutputFileEntropy = progress));
         }
-        private static Task<string> calc(string fileName, Action<string> progress)
+
+        private static string calc(string fileName, Action<string> progress)
         {
-            return Task<string>.Factory.StartNew(() =>
+            try
             {
-                try
-                {
-                    return Entropy.Value(fileName, i => progress($"{i}%...")).ToString(CultureInfo.InvariantCulture);
-                }
-                catch (Exception)
-                {
-                    // ignored
-                }
-                return string.Empty;
-            });
+                return Entropy.Value(fileName, i => progress($"{i}%...")).ToString(CultureInfo.InvariantCulture);
+            }
+            catch (Exception)
+            {
+                // ignored
+            }
+            return string.Empty;
         }
 
         public bool FilesIsValid()
@@ -119,7 +116,7 @@ namespace StreamCipher.Controls.Model
 
         public event PropertyChangedEventHandler PropertyChanged;
         [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        protected virtual void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }

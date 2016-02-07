@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows;
 using StreamCipher.Controls.Model;
@@ -17,7 +16,7 @@ namespace StreamCipher
             set
             {
                 _workTime = value;
-                OnPropertyChanged();
+                OnPropertyChangedWithName(nameof(WorkTime));
             }
         }
 
@@ -30,7 +29,7 @@ namespace StreamCipher
             {
                 _progress = value;
                 WorkTime = (DateTime.UtcNow - _startDateTime).ToString();
-                OnPropertyChanged();
+                OnPropertyChangedWithName(nameof(Progress));
             }
         }
 
@@ -41,7 +40,7 @@ namespace StreamCipher
             set
             {
                 _progressVisibility = value;
-                OnPropertyChanged();
+                OnPropertyChangedWithName(nameof(ProgressVisibility));
             }
         }
 
@@ -85,7 +84,7 @@ namespace StreamCipher
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        protected virtual void OnPropertyChangedWithName(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }

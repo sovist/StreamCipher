@@ -5,7 +5,6 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using UsbHidDevice.Converters;
 using UsbHidDevice.Infrastructure;
 
@@ -47,7 +46,7 @@ namespace UsbHidDevice.Controls.Model
             set
             {
                 _initBytesRegister = value;
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(InitBytesRegister));
             }
         }
 
@@ -78,7 +77,7 @@ namespace UsbHidDevice.Controls.Model
 
         private void sboxesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
-            OnPropertyChanged("Sboxes");
+            OnPropertyChanged(nameof(Sboxes));
         }
 
         public void GenereteNewBytesForRegister()
@@ -103,7 +102,7 @@ namespace UsbHidDevice.Controls.Model
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        protected virtual void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }

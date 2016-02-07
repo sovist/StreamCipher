@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -47,7 +46,7 @@ namespace UsbHidDevice
             private set
             {
                 _status = value;
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(Status));
             }
         }
 
@@ -117,7 +116,7 @@ namespace UsbHidDevice
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        protected virtual void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }

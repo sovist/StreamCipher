@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using UsbHidDevice.Infrastructure;
 
 namespace UsbHidDevice
@@ -19,7 +18,7 @@ namespace UsbHidDevice
                 for (var i = 0; i < value.Length && i < _key.Length; i++)                
                     _key[i] = value[i];
                 
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(Key));
             }
         }
 
@@ -33,8 +32,7 @@ namespace UsbHidDevice
                 _key = new byte[Lengths[SelectedLengthIndex]];
                 Generate();
 
-                OnPropertyChanged();
-                // ReSharper disable once ExplicitCallerInfoArgument
+                OnPropertyChanged(nameof(SelectedLengthIndex));
                 OnPropertyChanged(nameof(Key));
             }
         }
@@ -60,7 +58,7 @@ namespace UsbHidDevice
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        protected virtual void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }

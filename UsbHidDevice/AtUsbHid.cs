@@ -21,7 +21,7 @@ namespace UsbHidDevice
         {
             _libIntPtr = LoadLibrary(file);
             if (_libIntPtr == IntPtr.Zero) 
-                throw new System.ComponentModel.Win32Exception();
+                throw new Exception("AtUsbHid.dll not loaded");
         }
 
         [DllImport("AtUsbHid.dll", EntryPoint = "findHidDevice")]
@@ -61,9 +61,6 @@ namespace UsbHidDevice
             if (!readData(buff))
                 return null;
 
-            //flush
-            //readData(new byte[outputBufferLength]);
-            //readData(new byte[outputBufferLength]);
             return buff;
         }
 

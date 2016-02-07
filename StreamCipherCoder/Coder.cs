@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace StreamCipherCoder
@@ -50,7 +47,7 @@ namespace StreamCipherCoder
             }
         }
 
-        private void allocMemoryForCurrentSatate(IReadOnlyList<byte> currentState)
+        private void allocMemoryForCurrentSatate(byte[] currentState)
         {
             freeMemoryForCurrentSatate();
 
@@ -69,7 +66,7 @@ namespace StreamCipherCoder
                 Marshal.FreeHGlobal((IntPtr)_currentSatate);
         }
 
-        private void allocMemoryForSboxes(IReadOnlyList<byte[]> sboxes)
+        private void allocMemoryForSboxes(byte[][] sboxes)
         {
             freeMemoryForSboxes();
 
@@ -136,12 +133,6 @@ namespace StreamCipherCoder
         public void Decoded(byte[] array)
         {
             Coded(array);
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         public void Dispose()

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows;
 
 namespace UsbHidDevice
 {
@@ -8,8 +9,15 @@ namespace UsbHidDevice
 
         public MainWindow()
         {
-            Model = new MainWindowViewModel();
-            InitializeComponent();
+            try
+            {
+                Model = new MainWindowViewModel();
+                InitializeComponent();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
         }
 
         private void mainWindowOnClosed(object sender, EventArgs e)

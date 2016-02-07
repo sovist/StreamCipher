@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using System.Text;
 using System.Timers;
 using System.Windows.Input;
@@ -47,7 +46,7 @@ namespace UsbHidDevice
             set
             {
                 _sendText = value;
-                OnPropertyChanged();
+                OnPropertyChangedWithName(nameof(SendText));
                 OnPropertyChangedWithName(nameof(SendTextSizeBytes));
             }
         }
@@ -169,10 +168,6 @@ namespace UsbHidDevice
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
         protected virtual void OnPropertyChangedWithName([NotNull] string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

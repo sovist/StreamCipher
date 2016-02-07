@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 
@@ -7,11 +6,11 @@ namespace UsbHidDevice
 {
     public class Hash : IHash
     {
-        private readonly MD5Cng _md5Cng = new MD5Cng();
+        private readonly MD5CryptoServiceProvider _hash = new MD5CryptoServiceProvider();
         public byte[] Compute(int hashSizeInBytes, params byte[][] arr)
         {
             var allArrays = combineArrays(arr);
-            var hash = _md5Cng.ComputeHash(allArrays);
+            var hash = _hash.ComputeHash(allArrays);
             return compressHash(hashSizeInBytes, hash);
         }
 
@@ -27,13 +26,13 @@ namespace UsbHidDevice
             return resultArr;
         }
 
-        private static byte[] compressHash(int hashSizeInBytes, IReadOnlyList<byte> hash)
+        private static byte[] compressHash(int hashSizeInBytes, byte[] hash)
         {
-            var compresedHash = hashSizeInBytes > hash.Count ? new byte[hash.Count] : new byte[hashSizeInBytes];
-            var blocks = (int)Math.Ceiling((double)hash.Count / hashSizeInBytes);
+            var compresedHash = hashSizeInBytes > hash.Length ? new byte[hash.Length] : new byte[hashSizeInBytes];
+            var blocks = (int)Math.Ceiling((double)hash.Length / hashSizeInBytes);
 
             for (var currentBlock = 0; currentBlock <= blocks; currentBlock++)
-                for (int j = blocks * currentBlock, k = 0; k < compresedHash.Length && j < hash.Count; j++, k++)
+                for (int j = blocks * currentBlock, k = 0; k < compresedHash.Length && j < hash.Length; j++, k++)
                     compresedHash[k] ^= hash[j];
 
             return compresedHash;

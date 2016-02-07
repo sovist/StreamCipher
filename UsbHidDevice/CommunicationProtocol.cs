@@ -121,12 +121,12 @@ namespace UsbHidDevice
             Array.Copy(dataWithPayLoadLen, PayLoadLenInBytes, realpayLoad, 0, realpayLoad.Length);
             return realpayLoad;
         }
-        private static bool isArraysEquivalent(IReadOnlyList<byte> arr1, IReadOnlyList<byte> arr2)
+        private static bool isArraysEquivalent(byte[] arr1, byte[] arr2)
         {
-            if (arr1.Count != arr2.Count)
+            if (arr1.Length != arr2.Length)
                 return false;
 
-            for (int i = 0; i < arr1.Count; i++)           
+            for (int i = 0; i < arr1.Length; i++)           
                 if (arr1[i] != arr2[i])
                     return false;
 
