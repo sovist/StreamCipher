@@ -9,9 +9,13 @@ namespace UsbHidDevice
     public class CommunicationProtocol : ICommunicationProtocol
     {
         /* 
-            protocol format:            
-                          |            coded data          |          
-            [coder state, hash, payloadLen(1 bytes), payLoad]
+            protocol blok format:    
+            0. | ---------------------- blok 32 bytes --------------------------- |            
+            1. |------------------------------------------------------- | payLoad |
+            2. |------------------------------------|payloadLen(1 bytes)| payLoad |
+            3. |---------------------|hash (4 bytes)|payloadLen(1 bytes)| payLoad |
+            4. |---------------------|                coded data                  |
+            5. |coder state(4 bytes) |--------------- coded data -----------------|
         */
 
         private readonly object _deCoderSync = new object();

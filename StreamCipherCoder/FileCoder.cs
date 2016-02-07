@@ -15,12 +15,17 @@ namespace StreamCipherCoder
                 while (fileRead.BaseStream.Position != fileRead.BaseStream.Length)
                 {
                     var temp = fileRead.ReadBytes(readBufer);
-                    progress((int) ((double) fileRead.BaseStream.Position/fileRead.BaseStream.Length*100));
+                    progress((int)((double)fileRead.BaseStream.Position / fileRead.BaseStream.Length * 100));
 
                     coder.Coded(temp);
                     fileWrite.Write(temp);
                 }
             }
+        }
+
+        public static void Decoded(ICoder coder, string inputFileName, string outputFileName, Action<int> progress)
+        {
+            Coded(coder, inputFileName, outputFileName, progress);
         }
     }
 }

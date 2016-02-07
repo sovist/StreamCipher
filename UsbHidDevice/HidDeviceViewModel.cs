@@ -73,7 +73,7 @@ namespace UsbHidDevice
                 if(Status == DeviceStatus.Online)
                     continue;
 
-                Connect();
+                UpdateStatus();
             }
             // ReSharper disable once FunctionNeverReturns
         }
@@ -102,7 +102,7 @@ namespace UsbHidDevice
             return false;
         }
 
-        public void Connect()
+        public void UpdateStatus()
         {
             var isOnline = AtUsbHid.FindHidDevice(_vendorId, _productIds[SelectedProductId]);
             var currentDeviceStatus = isOnline ? DeviceStatus.Online : DeviceStatus.Offline;

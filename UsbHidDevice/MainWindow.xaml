@@ -41,7 +41,7 @@
                     <TextBlock Margin="20,0,0,0" Text="Status:" VerticalAlignment="Center" Style="{StaticResource DeviceStatusStyle}"/>
                     <TextBlock Margin="5,0,0,0" Text="{Binding Model.Device.Status, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Style="{StaticResource DeviceStatusStyle}"/>
                 </StackPanel>
-                <Button Margin="5,0,0,0" Click="connectOnClick">
+                <Button Margin="5,0,0,0" Command="{Binding Model.UpdateDeviceStatus}">
                     <Image Source="Resource/refresh57_16.png" />
                 </Button>
             </StackPanel>
@@ -65,10 +65,14 @@
                     <TextBlock Grid.Row="0" Margin="2" HorizontalAlignment="Right" Text="{Binding Model.SendTextSizeBytes, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" />
                     <TextBox Grid.Row="1" Margin="2" MaxHeight="400" MaxWidth="400" TextWrapping="Wrap" 
                              Text="{Binding Model.SendText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-                             ScrollViewer.VerticalScrollBarVisibility="Auto"/>
+                             ScrollViewer.VerticalScrollBarVisibility="Auto">
+                        <TextBox.InputBindings>
+                            <KeyBinding Command="{Binding Model.Send}" Key="Enter"/>
+                        </TextBox.InputBindings>
+                    </TextBox>
 
-                    <Button Grid.Row="2" Margin="2" HorizontalAlignment="Left"  VerticalAlignment="Bottom"  Content="Очистить" Click="clearSendOnClick"/>
-                    <Button Grid.Row="2" Margin="2" HorizontalAlignment="Right" VerticalAlignment="Bottom" Content="Отправить" Click="sendOnClick"/>
+                    <Button Grid.Row="2" Margin="2" HorizontalAlignment="Left"  VerticalAlignment="Bottom"  Content="Очистить" Command="{Binding Model.ClearSend}"/>
+                    <Button Grid.Row="2" Margin="2" HorizontalAlignment="Right" VerticalAlignment="Bottom" Content="Отправить" Command="{Binding Model.Send}"/>
                 </Grid>
             </GroupBox>
 
@@ -94,8 +98,8 @@
                              Text="{Binding Model.NotAuthenticatedReceiveText, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" 
                              ScrollViewer.VerticalScrollBarVisibility="Auto"/>
                     </GroupBox>
-                    
-                    <Button Grid.Row="3" Margin="2" HorizontalAlignment="Left"  VerticalAlignment="Bottom"  Content="Очистить" Click="clearRecieveOnClick"/>
+
+                    <Button Grid.Row="3" Margin="2" HorizontalAlignment="Left"  VerticalAlignment="Bottom"  Content="Очистить" Command="{Binding Model.ClearRecieve}"/>
                 </Grid>
             </GroupBox>
 
@@ -108,7 +112,7 @@
                           SelectedIndex="{Binding Model.HidDeviceCommunicationProtocol.CommunicationProtocol.ValidationKey.SelectedLengthIndex, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                 <TextBox Margin="5,0,0,0" VerticalAlignment="Center"
                          Text="{Binding Model.HidDeviceCommunicationProtocol.CommunicationProtocol.ValidationKey.Key, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource ByteArrayToStringConverter}}"/>
-                <Button Margin="5,0,0,0" Click="vectorAuthorizationOnClick">
+                <Button Margin="5,0,0,0" Command="{Binding Model.GenerateValidationKey}">
                     <Image Source="Resource/refresh57_16.png" />
                 </Button>
             </StackPanel>

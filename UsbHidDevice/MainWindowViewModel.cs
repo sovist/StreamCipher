@@ -3,7 +3,9 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Timers;
+using System.Windows.Input;
 using StreamCipherCoder;
+using UsbHidDevice.Annotations;
 using UsbHidDevice.Infrastructure;
 using Timer = System.Timers.Timer;
 
@@ -11,13 +13,72 @@ namespace UsbHidDevice
 {
     public class MainWindowViewModel : INotifyPropertyChanged, IDisposable
     {
+        internal class CommandAllowExecute : ICommand
+        {
+            public event EventHandler CanExecuteChanged;
+            private readonly Action<object> _execute;
+            public CommandAllowExecute(Action<object> execute)
+            {
+                _execute = execute;
+            }
+            public void Execute(object parameter)
+            {
+                _execute?.Invoke(parameter);
+            }
+            public bool CanExecute(object parameter)
+            {
+                return true;
+            }
+        }
+
+        public ICommand ClearRecieve { get; }
+        public ICommand ClearSend { get; }
+        public ICommand Send { get; }
+        public ICommand UpdateDeviceStatus { get; }
+        public ICommand GenerateValidationKey { get; }
+
         public HidDeviceCommunicationProtocol HidDeviceCommunicationProtocol { get; }
         public HidDeviceViewModel Device { get; }
 
+        private string _sendText;
+        public string SendText
+        {
+            get { return _sendText; }
+            set
+            {
+                _sendText = value;
+                OnPropertyChanged();
+                OnPropertyChangedWithName(nameof(SendTextSizeBytes));
+            }
+        }
+        public string SendTextSizeBytes
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(SendText))
+                    return ByteSizeInfo.Get(0);
+
+                return ByteSizeInfo.Get(SendText.Length * sizeof(char));
+            }
+        }
+
+        public string AuthenticatedReceiveText => _authenticatedReceiveTextStringBuilder.ToString();
+        public string NotAuthenticatedReceiveText => _notAuthenticatedReceiveTextStringBuilder.ToString();
+        public string ReceiveTextSizeBytes
+        {
+            get
+            {
+                if (_authenticatedReceiveTextStringBuilder.Length == 0)
+                    return ByteSizeInfo.Get(0);
+
+                return ByteSizeInfo.Get(_authenticatedReceiveTextStringBuilder.Length * sizeof(char));
+            }
+        }
+
         public MainWindowViewModel()
         {          
-            ClearSend();
-            ClearRecieve();
+            clearSend();
+            clearRecieve();
 
             Device = new HidDeviceViewModel();
             var communicationProtocol = new CommunicationProtocol(new Coder(), new Hash(), new Coder(), new Hash());
@@ -30,6 +91,12 @@ namespace UsbHidDevice
                 Interval = UpdateReceiveTextInterval
             };
             _updateReceiveText.Elapsed += updateReceiveTextOnElapsed;
+
+            ClearRecieve = new CommandAllowExecute(_ => clearRecieve());
+            ClearSend = new CommandAllowExecute(_ => clearSend());
+            Send = new CommandAllowExecute(_ => send());
+            UpdateDeviceStatus = new CommandAllowExecute(_ => updateDeviceStatus());
+            GenerateValidationKey = new CommandAllowExecute(_ => generateValidationKey());
         }
 
         #region Receive
@@ -39,27 +106,14 @@ namespace UsbHidDevice
         private readonly StringBuilder _authenticatedReceiveTextStringBuilder = new StringBuilder();
         private readonly StringBuilder _notAuthenticatedReceiveTextStringBuilder = new StringBuilder();
 
-        public string AuthenticatedReceiveText => _authenticatedReceiveTextStringBuilder.ToString();
-        public string NotAuthenticatedReceiveText => _notAuthenticatedReceiveTextStringBuilder.ToString();
-
-        public string ReceiveTextSizeBytes
-        {
-            get
-            {
-                if (_authenticatedReceiveTextStringBuilder.Length == 0)
-                    return ByteSizeInfo.Get(0);
-
-                return ByteSizeInfo.Get(_authenticatedReceiveTextStringBuilder.Length * sizeof(char));
-            }
-        }
         private void updateReceiveTextOnElapsed(object sender, ElapsedEventArgs elapsedEventArgs)
         {
-            OnPropertyChanged(nameof(ReceiveTextSizeBytes));
+            OnPropertyChangedWithName(nameof(ReceiveTextSizeBytes));
 
             if ((DateTime.UtcNow - _lastReceiveTimeUtc).TotalMilliseconds > UpdateReceiveTextInterval)
             {
-                OnPropertyChanged(nameof(AuthenticatedReceiveText));
-                OnPropertyChanged(nameof(NotAuthenticatedReceiveText));
+                OnPropertyChangedWithName(nameof(AuthenticatedReceiveText));
+                OnPropertyChangedWithName(nameof(NotAuthenticatedReceiveText));
                 _updateReceiveText.Enabled = false;
             }
         }
@@ -79,71 +133,50 @@ namespace UsbHidDevice
                     return;
             }           
         }
-        public void ClearRecieve()
+        private void clearRecieve()
         {
             _authenticatedReceiveTextStringBuilder.Clear();
             _notAuthenticatedReceiveTextStringBuilder.Clear();
-            OnPropertyChanged(nameof(ReceiveTextSizeBytes));
-            OnPropertyChanged(nameof(AuthenticatedReceiveText));
-            OnPropertyChanged(nameof(NotAuthenticatedReceiveText));
+            OnPropertyChangedWithName(nameof(ReceiveTextSizeBytes));
+            OnPropertyChangedWithName(nameof(AuthenticatedReceiveText));
+            OnPropertyChangedWithName(nameof(NotAuthenticatedReceiveText));
         }
         #endregion
 
         #region Send
-        private string _sendText;
-        public string SendText
-        {
-            get { return _sendText; }
-            set
-            {
-                _sendText = value;
-                OnPropertyChanged();
-                OnPropertyChanged(nameof(SendTextSizeBytes));
-            }
-        }
-
-        public string SendTextSizeBytes
-        {
-            get
-            {
-                if (string.IsNullOrEmpty(SendText))
-                    return ByteSizeInfo.Get(0);
-
-                return ByteSizeInfo.Get(SendText.Length * sizeof(char));
-            }
-        }
-        public void ClearSend()
+        private void clearSend()
         {
             SendText = string.Empty;
         }
 
-        public void Send()
+        private void send()
         {
             if(string.IsNullOrEmpty(SendText))
                 return;
 
             HidDeviceCommunicationProtocol.Send(SendText);
         }
-        public void Send(string str)
-        {
-            if (string.IsNullOrEmpty(str))
-                return;
-
-            HidDeviceCommunicationProtocol.Send(str);
-        }
         #endregion
+
+        private void generateValidationKey()
+        {
+            HidDeviceCommunicationProtocol.CommunicationProtocol.ValidationKey?.Generate();
+        }
+
+        private void updateDeviceStatus()
+        {
+            Device.UpdateStatus();
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-
-        public void Connected()
+        protected virtual void OnPropertyChangedWithName([NotNull] string propertyName)
         {
-            Device.Connect();
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-
         public void Dispose()
         {  
             Device.Dispose();   

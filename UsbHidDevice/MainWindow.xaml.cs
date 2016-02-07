@@ -1,45 +1,20 @@
 ﻿using System;
-using System.Windows;
 
 namespace UsbHidDevice
 {
     public partial class MainWindow
     {
         public MainWindowViewModel Model { get; }
+
         public MainWindow()
         {
             Model = new MainWindowViewModel();
             InitializeComponent();
         }
 
-        private void clearSendOnClick(object sender, RoutedEventArgs e)
-        {
-            Model?.ClearSend();
-        }
-
-        private void clearRecieveOnClick(object sender, RoutedEventArgs e)
-        {
-            Model?.ClearRecieve();
-        }
-
-        private void sendOnClick(object sender, RoutedEventArgs e)
-        {
-            Model?.Send();
-        }
-
-        private void connectOnClick(object sender, RoutedEventArgs e)
-        {
-            Model?.Connected();
-        }
-
         private void mainWindowOnClosed(object sender, EventArgs e)
         {
             Model?.Dispose();
-        }
-
-        private void vectorAuthorizationOnClick(object sender, RoutedEventArgs e)
-        {
-            Model?.HidDeviceCommunicationProtocol.CommunicationProtocol.ValidationKey?.Generate();
         }
     }
 }
