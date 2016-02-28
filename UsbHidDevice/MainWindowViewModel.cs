@@ -80,7 +80,7 @@ namespace UsbHidDevice
             clearRecieve();
 
             Device = new HidDeviceViewModel();
-            var communicationProtocol = new CommunicationProtocol(new Coder(), new Hash(), new Coder(), new Hash());
+            var communicationProtocol = new CommunicationProtocol(new Coder(CoderSatateSize.Size4), new Hash(), new Coder(CoderSatateSize.Size4), new Hash());
             HidDeviceCommunicationProtocol = new HidDeviceCommunicationProtocol(Device, communicationProtocol);
             HidDeviceCommunicationProtocol.ReceiveText += receiveText;
 

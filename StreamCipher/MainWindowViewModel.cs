@@ -68,7 +68,7 @@ namespace StreamCipher
             Progress = 0;
             ProgressVisibility = Visibility.Visible;
 
-            var coder = new Coder
+            var coder = new Coder(CipherSettingsViewModel.CoderSatateSize)
             {
                 CurrentSatate = CipherSettingsViewModel.InitBytesRegister,
                 Sboxes = CipherSettingsViewModel.SboxesArray

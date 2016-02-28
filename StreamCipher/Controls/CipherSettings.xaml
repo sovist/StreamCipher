@@ -23,9 +23,14 @@
                           TextChanged="registerOnTextChanged" HorizontalAlignment="Right" MinWidth="80" TextAlignment="Center"/>
                 </StackPanel>
                 <Button Grid.Row="0" Grid.Column="2" Content="Генерировать" HorizontalAlignment="Left" Click="genereteBytesForRegisterOnClick"/>
+
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="Кол. S-Box" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                <ComboBox Grid.Row="2" Grid.Column="1" Margin="5,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center" 
+                          ItemsSource="{Binding ViewModel.SboxesCounts, Mode=OneWay}" 
+                          SelectedIndex="{Binding ViewModel.SelectedSboxCountIndex, Mode=TwoWay}" />
             </Grid>
 
-            <ListView ItemsSource="{Binding ViewModel.Sboxes}" HorizontalAlignment="Center" Margin="10">
+            <ListView ItemsSource="{Binding ViewModel.Sboxes}" HorizontalAlignment="Center" Margin="10" MouseDoubleClick="sboxOnMouseDoubleClick">
                 <ListView.View>
                     <GridView>
                         <GridViewColumn Header="Параметры Sbox" DisplayMemberBinding="{Binding}" />

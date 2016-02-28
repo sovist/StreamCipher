@@ -6,6 +6,7 @@ using System.Globalization;
 using System.Linq;
 using StreamCipher.Converters;
 using StreamCipher.Infrastructure;
+using StreamCipherCoder;
 
 namespace StreamCipher.Controls.Model
 {
@@ -38,6 +39,7 @@ namespace StreamCipher.Controls.Model
 
         private byte[] _initBytesRegister;
         private int _randBytesIndex;
+        private int _selectedSboxCountIndex; 
 
         public byte[] InitBytesRegister
         {
@@ -46,6 +48,47 @@ namespace StreamCipher.Controls.Model
             {
                 _initBytesRegister = value;
                 OnPropertyChanged(nameof(InitBytesRegister));
+            }
+        }
+
+        public List<int> SboxesCounts { get; }
+
+        public int SelectedSboxCountIndex
+        {
+            get { return _selectedSboxCountIndex; }
+            set
+            {
+                _selectedSboxCountIndex = value;
+                generateNewAllSbox();
+                GenereteNewBytesForRegister();
+                OnPropertyChanged(nameof(SelectedSboxCountIndex));
+            }
+        }
+
+        public CoderSatateSize CoderSatateSize
+        {
+            get
+            {
+                var sel = SboxesCounts[SelectedSboxCountIndex];
+                if (sel == 2)
+                    return CoderSatateSize.Size2;
+
+                if (sel == 3)
+                    return CoderSatateSize.Size3;
+
+                if (sel == 4)
+                    return CoderSatateSize.Size4;
+
+                if (sel == 5)
+                    return CoderSatateSize.Size5;
+
+                if (sel == 6)
+                    return CoderSatateSize.Size6;
+
+                if (sel == 7)
+                    return CoderSatateSize.Size7;
+
+                return CoderSatateSize.Size8;
             }
         }
 
@@ -62,21 +105,32 @@ namespace StreamCipher.Controls.Model
 
         public CipherSettingsViewModel()
         {
+            _selectedSboxCountIndex = 2;
+
             RValues = new List<double> {0.1, 0.01, 0.001, 0.0001, 0.00001, 0.000001};
             SigmaValues = new List<double> {6, 5, 4, 3, 0};
+            SboxesCounts = Enumerable.Range(2, 7).ToList();
+            Sboxes = new ObservableCollection<Sbox>();
 
-            Sboxes = new ObservableCollection<Sbox>(new Sbox[4]);
-            for (int i = 0; i < Sboxes.Count; i++)            
-                GenerateNewSbox();                          
-            
+            generateNewAllSbox();
             GenereteNewBytesForRegister();
+        }
+        private void generateNewAllSbox()
+        {
+            Sboxes.Clear();
+
+            for (var i = 0; i < SboxesCounts[SelectedSboxCountIndex]; i++)            
+                Sboxes.Add(new Sbox());
+            
+            for (int i = 0; i < Sboxes.Count; i++)
+                GenerateNewSbox();
         }
 
         public void GenereteNewBytesForRegister()
         {
-            InitBytesRegister = GenerateBytesSequense.Get(4);
+            InitBytesRegister = GenerateBytesSequense.Get(SboxesCounts[SelectedSboxCountIndex]);
         }
-       
+
         public void GenerateNewSbox()
         {
             _randBytesIndex++;
